@@ -81,7 +81,7 @@ of the following parts:
 
 - `const Foo = `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
   `const Foo = `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
-  Define a basic trait or sub-trait.
+  Define a concrete trait or sub-trait.
 
 - `const Foo = <T extends any>() => `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
   `const Foo = <T extends any>() => `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
