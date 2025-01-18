@@ -26,7 +26,7 @@ $ npm install @rse/traits
 Usage
 -----
 
-```js
+```ts
 import { Trait, Derive } from "@rse/traits"
 
 const Swim = Trait((base) => class Swim extends base {
