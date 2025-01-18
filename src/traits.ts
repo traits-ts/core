@@ -4,6 +4,8 @@
 **  Licensed under MIT license <https://spdx.org/licenses/MIT>
 */
 
+/*  ==== UTILITY DEFINITIONS ====  */
+
 /*  utility function: CRC32-hashing a string into a unique identifier  */
 const crcTable = [] as number[]
 for (let n = 0; n < 256; n++) {
@@ -59,6 +61,8 @@ type Explode<T extends any> =
 type UnionToIntersection<U> =
     (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
 
+/*  ==== TRAIT DEFINITION ====  */
+
 /*  API: trait type  */
 export type Trait<
     T  extends ConsFactory<Cons> = ConsFactory<Cons>,
@@ -69,6 +73,47 @@ export type Trait<
     factory:      T
     superTraits?: ST
 }
+
+/*  API: generate trait (regular variant)  */
+/* eslint no-redeclare: off */
+export function Trait<
+    T extends ConsFactory<Cons>
+> (factory: T): Trait<T>
+
+/*  API: generate trait (super-trait variant)  */
+export function Trait<
+    const ST extends (Trait | TypeFactory<Trait>)[],
+    T extends ConsFactory<Cons,
+        ST extends [ infer First, ...infer Rest ] ? (
+            First extends TypeFactory<Trait> ? ExtractFactory<ReturnType<First>> :
+            First extends Trait              ? ExtractFactory<First> :
+            Cons
+        ) : Cons
+    >
+> (superTraits: ST, factory: T): Trait<T, ST>
+
+/*  API: generate trait (technical implementation)  */
+export function Trait<
+    const ST extends (Trait | TypeFactory<Trait>)[],
+    T extends ConsFactory<Cons,
+        ST extends [ infer First, ...infer Rest ] ? (
+            First extends TypeFactory<Trait> ? ExtractFactory<ReturnType<First>> :
+            First extends Trait              ? ExtractFactory<First> :
+            Cons
+        ) : Cons
+    >
+> (...args: any[]): Trait<T, ST> {
+    const factory: T      = (args.length === 2 ? args[1] : args[0])
+    const superTraits: ST = (args.length === 2 ? args[0] : undefined)
+    return {
+        id: crc32(factory.toString()),
+        symbol: Symbol("trait"),
+        factory,
+        superTraits
+    }
+}
+
+/*  ==== TRAIT DERIVATION ====  */
 
 /*  utility type: extract factory and supertraits from a trait  */
 type ExtractFactory<T extends Trait> =
@@ -149,44 +194,7 @@ export const Derive =
     return clz as DeriveTraits<T>
 }
 
-/*  API: generate trait (regular variant)  */
-/* eslint no-redeclare: off */
-export function Trait<
-    T extends ConsFactory<Cons>
-> (factory: T): Trait<T>
-
-/*  API: generate trait (super-trait variant)  */
-export function Trait<
-    const ST extends (Trait | TypeFactory<Trait>)[],
-    T extends ConsFactory<Cons,
-        ST extends [ infer First, ...infer Rest ] ? (
-            First extends TypeFactory<Trait> ? ExtractFactory<ReturnType<First>> :
-            First extends Trait              ? ExtractFactory<First> :
-            Cons
-        ) : Cons
-    >
-> (superTraits: ST, factory: T): Trait<T, ST>
-
-/*  API: generate trait (technical implementation)  */
-export function Trait<
-    const ST extends (Trait | TypeFactory<Trait>)[],
-    T extends ConsFactory<Cons,
-        ST extends [ infer First, ...infer Rest ] ? (
-            First extends TypeFactory<Trait> ? ExtractFactory<ReturnType<First>> :
-            First extends Trait              ? ExtractFactory<First> :
-            Cons
-        ) : Cons
-    >
-> (...args: any[]): Trait<T, ST> {
-    const factory: T      = (args.length === 2 ? args[1] : args[0])
-    const superTraits: ST = (args.length === 2 ? args[0] : undefined)
-    return {
-        id: crc32(factory.toString()),
-        symbol: Symbol("trait"),
-        factory,
-        superTraits
-    }
-}
+/*  ==== TRAIT TYPE-GUARDING ====  */
 
 /*  internal implements derive type: trait  */
 type HasTraitType<T extends Trait> =
