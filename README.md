@@ -75,19 +75,19 @@ API
 The Application Programming Interface (API) of **@rse/traits** consists
 of the following parts:
 
-- `import { Trait, Subtrait, Derive, hasTrait } from "@rse/traits"`<br/>
-  `import type { Trait } from "@rse/traits"`<br/>
+- `import { `**`Trait, Subtrait, Derive, hasTrait`**` } from "@rse/traits"`<br/>
+  `import type { `**`Trait`**` } from "@rse/traits"`<br/>
   Imports the four API run-time functions and optionally the central compile-time type.
 
-- `const Foo = Trait((base) => class Foo extends base { ... }`<br/>
-  `const Foo = Subtrait([ Bar, Quux ], (base) => class Foo extends base { ... }`
+- `const Foo = `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
+  `const Foo = `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`
   Define a basic trait or sub-trait.
 
-- `const Foo = <T extends any>() => Trait((base) => class Foo extends base { ... }`<br/>
-  `const Foo = <T extends any>() => Subtrait([ Bar, Quux ], (base) => class Foo extends base { ... }`
+- `const Foo = <T extends any>() => `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
+  `const Foo = <T extends any>() => `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`
   Define a generic trait or sub-trait.
 
-- `class Sample extends `**`Derive`**(Foo, Quux) { ... }`<br/>
+- `class Sample extends `**`Derive`**`(Foo, Quux) { ... }`<br/>
   Define an application class with features from a base class which
   is derived from two traits.
 
