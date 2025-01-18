@@ -9,7 +9,7 @@ scripts:
     dev:                  nodemon --exec "npm start lint build test" --watch src --ext ts,1
 
     #   static code analysis (linting)
-    lint:                 eslint --config etc/eslint.mjs src/**/*.ts
+    lint:                 eslint --config etc/eslint.mts src/**/*.ts
     lint-watch:           nodemon --exec "npm start lint" --watch src --ext ts,1
 
     #   code compilation/transpiling (building)
