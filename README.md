@@ -87,7 +87,7 @@ of the following parts:
   `const Foo = <T extends any>() => Subtrait([ Bar, Quux ], (base) => class Foo extends base { ... }`
   Define a generic trait or sub-trait.
 
-- `class Sample extends **Derive**(Foo, Quux) { ... }`<br/>
+- `class Sample extends `**`Derive`**(Foo, Quux) { ... }`<br/>
   Define an application class with features from a base class which
   is derived from two traits.
 
