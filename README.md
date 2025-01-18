@@ -33,12 +33,10 @@ const Swim = Trait((base) => class Swim extends base {
     swimmed = 0
     swim () { return this.swimmed++ }
 })
-
 const Walk = Trait((base) => class Walk extends base {
     walked = 0
     walk () { return this.walked++ }
 })
-
 class Sample extends Derive(Swim, Walk) {
     perform () {
         console.log(this.swim())
@@ -49,6 +47,7 @@ class Sample extends Derive(Swim, Walk) {
         console.log(this.walk())
     }
 }
+
 const sample = new Sample()
 sample.perform()
 ```
@@ -76,7 +75,7 @@ difference between generic and concrete traits.
 License
 -------
 
-Copyright (c) 2025 Dr. Ralf S. Engelschall (http://engelschall.com/)
+Copyright &copy; 2025 Dr. Ralf S. Engelschall (http://engelschall.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
