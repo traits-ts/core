@@ -80,11 +80,11 @@ of the following parts:
   Imports the four API run-time functions and optionally the central compile-time type.
 
 - `const Foo = `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
-  `const Foo = `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`
+  `const Foo = `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
   Define a basic trait or sub-trait.
 
 - `const Foo = <T extends any>() => `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
-  `const Foo = <T extends any>() => `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`
+  `const Foo = <T extends any>() => `**`Subtrait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
   Define a generic trait or sub-trait.
 
 - `class Sample extends `**`Derive`**`(Foo, Quux) { ... }`<br/>
