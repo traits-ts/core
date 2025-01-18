@@ -4,7 +4,7 @@
 Traits
 ======
 
-Traits for TypeScript Classes
+**Traits for TypeScript Classes**
 
 <p/>
 <img src="https://nodei.co/npm/@rse/traits.png?downloads=true&stars=true" alt=""/>
