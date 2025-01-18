@@ -1,4 +1,6 @@
 
+<img src="https://raw.githubusercontent.com/rse/traits/master/etc/logo.svg" width="150" style="float: right" align="right" alt=""/>
+
 Traits
 ======
 
@@ -6,9 +8,6 @@ Traits for TypeScript Classes
 
 <p/>
 <img src="https://nodei.co/npm/@rse/traits.png?downloads=true&stars=true" alt=""/>
-
-<p/>
-<img src="https://david-dm.org/rse/@rse/traits.png" alt=""/>
 
 [![github (author stars)](https://img.shields.io/github/stars/rse?logo=github&label=author%20stars&color=%233377aa)](https://github.com/rse)
 [![github (author followers)](https://img.shields.io/github/followers/rse?label=author%20followers&logo=github&color=%234477aa)](https://github.com/rse)
