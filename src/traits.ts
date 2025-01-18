@@ -149,18 +149,14 @@ export const Derive =
     return clz as DeriveTraits<T>
 }
 
-/*  API: generate regular trait  */
+/*  API: generate trait (regular variant)  */
 /* eslint no-redeclare: off */
-export const Trait = <
+export function Trait<
     T extends ConsFactory<Cons>
->(factory: T): Trait<T> => ({
-    id: crc32(factory.toString()),
-    symbol: Symbol("trait"),
-    factory
-})
+> (factory: T): Trait<T>
 
-/*  API: generate trait with super trait references  */
-export const Subtrait = <
+/*  API: generate trait (super-trait variant)  */
+export function Trait<
     const ST extends (Trait | TypeFactory<Trait>)[],
     T extends ConsFactory<Cons,
         ST extends [ infer First, ...infer Rest ] ? (
@@ -169,12 +165,28 @@ export const Subtrait = <
             Cons
         ) : Cons
     >
->(superTraits: ST, factory: T): Trait<T, ST> => ({
-    id: crc32(factory.toString()),
-    symbol: Symbol("trait"),
-    factory,
-    superTraits
-})
+> (superTraits: ST, factory: T): Trait<T, ST>
+
+/*  API: generate trait (technical implementation)  */
+export function Trait<
+    const ST extends (Trait | TypeFactory<Trait>)[],
+    T extends ConsFactory<Cons,
+        ST extends [ infer First, ...infer Rest ] ? (
+            First extends TypeFactory<Trait> ? ExtractFactory<ReturnType<First>> :
+            First extends Trait              ? ExtractFactory<First> :
+            Cons
+        ) : Cons
+    >
+> (...args: any[]): Trait<T, ST> {
+    const factory: T      = (args.length === 2 ? args[1] : args[0])
+    const superTraits: ST = (args.length === 2 ? args[0] : undefined)
+    return {
+        id: crc32(factory.toString()),
+        symbol: Symbol("trait"),
+        factory,
+        superTraits
+    }
+}
 
 /*  internal implements derive type: trait  */
 type ImplementsTrait<T extends Trait> =

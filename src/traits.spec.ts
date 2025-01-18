@@ -8,7 +8,7 @@ import * as chai from "chai"
 import sinon     from "sinon"
 import sinonChai from "sinon-chai"
 
-import { Trait, Subtrait, Derive, hasTrait } from "./traits"
+import { Trait, Derive, hasTrait } from "./traits"
 
 const expect = chai.expect
 chai.config.includeStack = true
@@ -17,7 +17,6 @@ chai.use(sinonChai)
 describe("Trait Facility", () => {
     it("exposed API", () => {
         expect(Trait).to.be.a("function")
-        expect(Subtrait).to.be.a("function")
         expect(Derive).to.be.a("function")
         expect(hasTrait).to.be.a("function")
     })
@@ -55,13 +54,14 @@ describe("Trait Facility", () => {
         const Bar = <T extends any>() => Trait((base) => class Bar extends base {
             constructor () { super(); spy("Bar") }
         })
-        const Baz = Subtrait([ Bar<string>, Foo ], (base) => class Baz extends base {
+        const Baz = Trait([ Bar<string>, Foo ], (base) => class Baz extends base {
             constructor () { super(); spy("Baz") }
         })
         class App extends Derive(Baz) {
             constructor () { super(); spy("App") }
         }
         const app = new App()
+        expect(hasTrait(app, Foo)).to.be.equal(true)
         expect(spy.getCalls().map((x) => x.args[0]))
             .to.be.deep.equal([ "Foo", "Bar", "Baz", "App" ])
     })
