@@ -1,5 +1,5 @@
 
-<img src="https://raw.githubusercontent.com/rse/traits/master/etc/logo.svg" width="150" style="float: right" align="right" alt=""/>
+<img src="https://raw.githubusercontent.com/rse/traits/refs/heads/master/etc/logo.svg" width="150" style="float: right" align="right" alt=""/>
 
 Traits
 ======
