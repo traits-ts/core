@@ -196,11 +196,11 @@ export const Derive =
 
 /*  ==== TRAIT TYPE-GUARDING ====  */
 
-/*  internal implements derive type: trait  */
+/*  internal type: implements trait type  */
 type HasTraitType<T extends Trait> =
     InstanceType<ExtractFactory<T>>
 
-/*  internal implements derive type: trait or trait type factory  */
+/*  internal type: implements trait type or trait type factory  */
 type HasTrait<T extends (Trait | TypeFactory<Trait>)> =
     T extends TypeFactory<Trait> ? HasTraitType<ReturnType<T>> :
     T extends Trait              ? HasTraitType<T> :
