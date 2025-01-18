@@ -1,1 +1,3 @@
 node_modules
+dst/traits.spec.*
+dst/traits.js

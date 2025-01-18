@@ -189,20 +189,20 @@ export function Trait<
 }
 
 /*  internal implements derive type: trait  */
-type ImplementsTrait<T extends Trait> =
+type HasTraitType<T extends Trait> =
     InstanceType<ExtractFactory<T>>
 
 /*  internal implements derive type: trait or trait type factory  */
-type ImplementsTraitOrFunc<T extends (Trait | TypeFactory<Trait>)> =
-    T extends TypeFactory<Trait> ? ImplementsTrait<ReturnType<T>> :
-    T extends Trait              ? ImplementsTrait<T> :
+type HasTrait<T extends (Trait | TypeFactory<Trait>)> =
+    T extends TypeFactory<Trait> ? HasTraitType<ReturnType<T>> :
+    T extends Trait              ? HasTraitType<T> :
     never
 
 /*  API: type guard for checking whether class instance implements a trait  */
 export const hasTrait = <
     T extends (Trait | TypeFactory<Trait>)
 > (instance: unknown, trait: T):
-    instance is ImplementsTraitOrFunc<T> => {
+    instance is HasTrait<T> => {
     /*  ensure the class instance is really an object  */
     if (typeof instance !== "object")
         return false
