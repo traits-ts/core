@@ -54,7 +54,7 @@ const isTypeFactory =
     typeof fn === "function" && !fn.prototype && fn.length === 0
 
 /*  utility type: map an object type into a bare properties type  */
-type Explode<T extends any> =
+type Explode<T extends object> =
     { [ P in keyof T ]: T[P] }
 
 /*  utility type: convert a union type to an intersection type  */
