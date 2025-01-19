@@ -54,19 +54,29 @@ const isTypeFactory =
     typeof fn === "function" && !fn.prototype && fn.length === 0
 
 /*  utility type: map an object type into a bare properties type  */
-type Explode<T extends object> =
+type Explode<T extends any> =
     { [ P in keyof T ]: T[P] }
 
 /*  utility type: convert a union type to an intersection type  */
 type UnionToIntersection<U> =
-    (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
+    (U extends any ? (k: U) => void : never) extends
+    (k: infer I) => void ? I : never
+
+/*  utility type: convert a union type to an array type  */
+type UnionToArray<U, R extends any[] = []> =
+    [ U ] extends [ never ] ? R :
+    UnionToArray<Exclude<U, U>, [ U, ...R ]>
+
+/*  utility type: convert an array type to a union type  */
+type ArrayToUnion<T extends any[]> =
+    T[number]
 
 /*  ==== TRAIT DEFINITION ====  */
 
 /*  API: trait type  */
 export type Trait<
     T  extends ConsFactory<Cons> = ConsFactory<Cons>,
-    ST extends (Trait | TypeFactory<Trait>)[] = any[]
+    ST extends ((Trait | TypeFactory<Trait>)[] | undefined) = undefined
 > = {
     id:           number  /* unique id (primary,   for hasTrait)      */
     symbol:       symbol  /* unique id (secondary, currently unused)  */
@@ -118,8 +128,8 @@ export function Trait<
 /*  utility type: extract factory and supertraits from a trait  */
 type ExtractFactory<T extends Trait> =
     T extends Trait<
-        ConsFactory<infer F>
-    > ? F : never
+        ConsFactory<infer C>
+    > ? C : never
 type ExtractSuperTrait<T extends Trait> =
     T extends Trait<
         ConsFactory<Cons>,
