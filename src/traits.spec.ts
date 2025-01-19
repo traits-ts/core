@@ -44,7 +44,6 @@ describe("Trait Facility", () => {
         }
         const sample = new Sample()
         sample.perform()
-        sample.swimmingx = 1
     })
 
     it("complex usage", () => {
