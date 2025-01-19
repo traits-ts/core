@@ -23,21 +23,22 @@ describe("Trait Facility", () => {
 
     it("basic usage", () => {
         const Swim = Trait((base) => class Swim extends base {
-            static swimmers = 0
+            static swimmers = 1
             swimming = 0
             swim () { return this.swimming++ }
         })
         const Walk = Trait((base) => class Walk extends base {
-            static walkers = 0
+            static walkers = 2
             walking = 0
             walk () { return this.walking++ }
         })
-        const xxx = Derive(Swim, Walk)
         class Sample extends Derive(Swim, Walk) {
-            static samplers = 0
+            static samplers = 3
             sampling = 0
             perform () {
                 expect(this.sampling).to.be.equal(0)
+                expect(this.swimming).to.be.equal(0)
+                expect(this.walking).to.be.equal(0)
                 expect(this.swim()).to.be.equal(0)
                 expect(this.walk()).to.be.equal(0)
                 expect(this.swim()).to.be.equal(1)
@@ -47,6 +48,7 @@ describe("Trait Facility", () => {
             }
         }
         const sample = new Sample()
+        expect(Sample.samplers).to.be.equal(3)
         sample.perform()
     })
 
