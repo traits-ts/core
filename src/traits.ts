@@ -37,6 +37,28 @@ const isCons =
     (fn: unknown): fn is Cons<T> =>
     typeof fn === "function" && !!fn.prototype && !!fn.prototype.constructor
 
+/*  utility type: merge two constructors  */
+type ConsMergeTwo<
+    A extends (new (...args: any[]) => any),
+    B extends (new (...args: any[]) => any)
+> =
+    A   extends (new (...args: infer ArgsA) => infer RetA)
+    ? B extends (new (...args: infer ArgsB) => infer RetB)
+    ? new (...args: ArgsA & ArgsB) => RetA & RetB
+    : never
+    : never
+
+/*  utility type: merge one or more constructors  */
+type ConsMergeAny<
+    T extends (new (...args: any[]) => any)[]
+> =
+    T extends [
+        infer    Head extends (new (...args: any[]) => any),
+        ...infer Tail extends (new (...args: any[]) => any)[]
+    ] ? ConsMergeTwo<Head, ConsMergeAny<Tail> /* RECURSION */>
+    : T extends [ infer Single extends (new (...args: any[]) => any) ] ? Single
+    : new (...args: any[]) => {}
+
 /*  utility type and function: constructor factory (function)  */
 type ConsFactory<T extends Cons = Cons, B extends any = any> =
     (base: B) => T
@@ -61,11 +83,6 @@ type Explode<T extends any> =
 type UnionToIntersection<U> =
     (U extends any ? (k: U) => void : never) extends
     (k: infer I) => void ? I : never
-
-/*  utility type: convert a union type to an array type  */
-type UnionToArray<U, R extends any[] = []> =
-    [ U ] extends [ never ] ? R :
-    UnionToArray<Exclude<U, U>, [ U, ...R ]>
 
 /*  utility type: convert an array type to a union type  */
 type ArrayToUnion<T extends any[]> =
@@ -125,7 +142,7 @@ export function Trait<
 
 /*  ==== TRAIT DERIVATION ====  */
 
-/*  utility type: extract factory and supertraits from a trait  */
+/*  utility types: extract factory and supertraits from a trait  */
 type ExtractFactory<T extends Trait> =
     T extends Trait<
         ConsFactory<infer C>
@@ -136,25 +153,49 @@ type ExtractSuperTrait<T extends Trait> =
         infer ST extends (Trait | TypeFactory<Trait>)[]
     > ? ST : never
 
-/*  internal type derive: constructor  */
-type DeriveCons<T extends Cons> =
-    { new (...args: ConstructorParameters<T>): InstanceType<T> } &
-    UnionToIntersection<Explode<InstanceType<T>>>
+/*  utility type: derive type constructor: from constructor  */
+type DeriveConsTraitCons<T extends Cons> =
+    new (...args: ConstructorParameters<T>) => InstanceType<T>
 
-/*  internal type derive: trait  */
-/* eslint no-use-before-define: off */
-type DeriveTrait<T extends Trait> =
-    DeriveCons<ExtractFactory<T>> &
-    DeriveTraits<ExtractSuperTrait<T>>
+/*  utility type: derive type constructor: from single trait  */
+type DeriveConsTrait<T extends Trait> =
+    DeriveConsTraitCons<ExtractFactory<T>> |
+    DeriveConsTraitsAll<ExtractSuperTrait<T>> /* RECURSION */
 
-/*  internal type derive: traits  */
-type DeriveTraits<T extends (Trait | TypeFactory<Trait>)[]> =
+/*  utility type: derive type constructor: from one or more traits or trait factories  */
+type DeriveConsTraitsAll<T extends (Trait | TypeFactory<Trait>)[]> =
+    { [ K in keyof T ]:
+        T[K] extends Trait              ? DeriveConsTrait<T[K]>             :
+        T[K] extends TypeFactory<Trait> ? DeriveConsTrait<ReturnType<T[K]>> :
+        never
+    }
+
+/*  utility type: derive type constructor: from one or more traits or trait factories  */
+type DeriveConsTraits<T extends (Trait | TypeFactory<Trait>)[]> =
+    ConsMergeAny<DeriveConsTraitsAll<T>>
+
+/*  utility type: derive type statics: from constructor  */
+type DeriveStatCons<T extends Cons> =
+    UnionToIntersection<Explode<T>>
+
+/*  utility type: derive type statics: from single trait  */
+type DerviceStatTrait<T extends Trait> =
+    DeriveStatCons<ExtractFactory<T>> &
+    DeriveStatTraits<ExtractSuperTrait<T>> /* RECURSION */
+
+/*  utility type: derive type statics: from one or more traits or trait factories  */
+type DeriveStatTraits<T extends (Trait | TypeFactory<Trait>)[]> =
     UnionToIntersection<{
         [ K in keyof T ]:
-            T[K] extends Trait              ? DeriveTrait<T[K]>             :
-            T[K] extends TypeFactory<Trait> ? DeriveTrait<ReturnType<T[K]>> :
+            T[K] extends Trait              ? DerviceStatTrait<T[K]>             :
+            T[K] extends TypeFactory<Trait> ? DerviceStatTrait<ReturnType<T[K]>> :
             never
     }[number]>
+
+/*  utility type: derive type from one or more traits or trait factories  */
+type DeriveTraits<T extends (Trait | TypeFactory<Trait>)[]> =
+    DeriveConsTraits<T> &
+    DeriveStatTraits<T>
 
 /*  utility function: add an additional invisible property to an object  */
 const extendProperties =
