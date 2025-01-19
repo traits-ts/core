@@ -155,17 +155,6 @@ const extendProperties =
 const rawTrait = (x: (Trait | TypeFactory<Trait>)) =>
     isTypeFactory(x) ? x() : x
 
-/*  utility function: derive class from a base class via the class factory  */
-const deriveClass = (
-    trait: Trait,
-    baseClz: Cons<any>
-) => {
-    const clz = trait.factory(baseClz)
-    extendProperties(clz, "id", crc32(trait.factory.toString()))
-    extendProperties(clz, trait.symbol, true)
-    return clz
-}
-
 /*  utility function: derive a trait  */
 const deriveTrait = (
     trait$:  Trait | TypeFactory<Trait>,
@@ -188,7 +177,9 @@ const deriveTrait = (
                 clz = deriveTrait(superTrait$, clz, derived) /*  RECURSION  */
 
         /*  derive this trait  */
-        clz = deriveClass(trait, clz)
+        clz = trait.factory(clz)
+        extendProperties(clz, "id", crc32(trait.factory.toString()))
+        extendProperties(clz, trait.symbol, true)
     }
 
     return clz
