@@ -198,12 +198,12 @@ type DerviceStatTrait<T extends TraitAny> =
 /*  utility type: derive type statics: from one or more traits or trait factories  */
 type DeriveStatTraits<T extends ((TraitAny | TypeFactory<TraitAny>)[] | undefined)> =
     T extends (TraitAny | TypeFactory<TraitAny>)[] ? (
-        UnionToIntersection<{
+        UnionToIntersection<ArrayToUnion<{
             [ K in keyof T ]:
                 T[K] extends TraitAny              ? DerviceStatTrait<T[K]>             :
                 T[K] extends TypeFactory<TraitAny> ? DerviceStatTrait<ReturnType<T[K]>> :
                 never
-        }[number]>
+        }>>
     ) : {}
 
 /*  utility type: derive type from one or more traits or trait factories  */
