@@ -62,8 +62,8 @@ Example
 import { Trait, Derive } from "@rse/traits"
 
 const Swim = Trait((base) => class Swim extends base {
-    swimmed = 0
-    swim () { return this.swimmed++ }
+    swum = 0
+    swim () { return this.swum++ }
 })
 const Walk = Trait((base) => class Walk extends base {
     walked = 0
