@@ -37,16 +37,15 @@ The Application Programming Interface (API) of **@rse/traits** consists
 of the following parts:
 
 - `import { `**`Trait, Derive, hasTrait`**` } from "@rse/traits"`<br/>
-  `import type { `**`Trait`**` } from "@rse/traits"`<br/>
-  Imports the three API run-time functions and optionally the central compile-time type.
+  Import the three API run-time functions.
 
 - `const Foo = `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
   `const Foo = `**`Trait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
-  Define a concrete trait or sub-trait.
+  Define a regular trait/sub-trait.
 
 - `const Foo = <T extends any>() => `**`Trait`**`((base) => class Foo extends base { ... }`<br/>
   `const Foo = <T extends any>() => `**`Trait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
-  Define a generic trait or sub-trait.
+  Define a generic trait/sub-trait.
 
 - `class Sample extends `**`Derive`**`(Foo, Quux) { ... }`<br/>
   Define an application class with features from a base class which
