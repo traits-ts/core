@@ -204,7 +204,7 @@ type DeriveStatTraits<T extends ((TraitAny | TypeFactory<TraitAny>)[] | undefine
                 T[K] extends TypeFactory<TraitAny> ? DerviceStatTrait<ReturnType<T[K]>> :
                 never
         }[number]>
-    ) : never
+    ) : {}
 
 /*  utility type: derive type from one or more traits or trait factories  */
 type DeriveTraits<T extends (TraitAny | TypeFactory<TraitAny>)[]> =

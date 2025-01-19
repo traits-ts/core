@@ -48,6 +48,8 @@ describe("Trait Facility", () => {
             }
         }
         const sample = new Sample()
+        expect(Sample.swimmers).to.be.equal(1)
+        expect(Sample.walkers).to.be.equal(2)
         expect(Sample.samplers).to.be.equal(3)
         sample.perform()
     })
