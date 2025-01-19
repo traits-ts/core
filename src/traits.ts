@@ -68,8 +68,8 @@ export type Trait<
     T  extends ConsFactory<Cons> = ConsFactory<Cons>,
     ST extends (Trait | TypeFactory<Trait>)[] = any[]
 > = {
-    id:           number  /* unique id (primary, for implementsTrait) */
-    symbol:       symbol  /* unique id (secondary, basely unused)  */
+    id:           number  /* unique id (primary,   for hasTrait)      */
+    symbol:       symbol  /* unique id (secondary, currently unused)  */
     factory:      T
     superTraits?: ST
 }
