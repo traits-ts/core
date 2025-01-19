@@ -18,10 +18,14 @@ Traits
 About
 -----
 
-This is a small TypeScript library providing a Trait (aka Mixin)
-facility for extending classes with *multiple* base functionalities.
-It is fully type-safe at the TypeScript level and leverages the regular
-`class extends` mechanism at the JavaScript level.
+This is a small TypeScript library providing a trait (aka mixin)
+facility for extending classes with *multiple* base functionalities. It
+is fully type-safe at the TypeScript level and internally leverages the
+regular `class extends` mechanism at the JavaScript level. It consists
+of the API function `Trait` for defining a trait or sub-trait, the API
+function `Derive` for deriving a base class from one or more defined
+traits, and the API function `hasTrait` to ensure an object has the
+functionality of a trait.
 
 Installation
 ------------
