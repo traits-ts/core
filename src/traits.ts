@@ -151,21 +151,52 @@ const extendProperties =
     (cons: Cons, field: string | symbol, value: any) =>
     Object.defineProperty(cons, field, { value, enumerable: false, writable: false })
 
-/*  utility function: derive all class from a base class via the class factory  */
-const deriveClass = (trait: Trait, baseClz: Cons<any>) => {
+/*  utility function: get raw trait  */
+const rawTrait = (x: (Trait | TypeFactory<Trait>)) =>
+    isTypeFactory(x) ? x() : x
+
+/*  utility function: derive class from a base class via the class factory  */
+const deriveClass = (
+    trait: Trait,
+    baseClz: Cons<any>
+) => {
     const clz = trait.factory(baseClz)
     extendProperties(clz, "id", crc32(trait.factory.toString()))
     extendProperties(clz, trait.symbol, true)
     return clz
 }
 
+/*  utility function: derive a trait  */
+const deriveTrait = (
+    trait$:  Trait | TypeFactory<Trait>,
+    baseClz: Cons<any>,
+    derived: Map<number, boolean>
+) => {
+    /*  get real trait  */
+    const trait = rawTrait(trait$)
+
+    /*  start with base class  */
+    let clz = baseClz
+
+    /*  in case we still have not derived this trait...  */
+    if (!derived.has(trait.id)) {
+        derived.set(trait.id, true)
+
+        /*  iterate over all of its super traits  */
+        if (trait.superTraits !== undefined)
+            for (const superTrait$ of reverseTraitList(trait.superTraits))
+                clz = deriveTrait(superTrait$, clz, derived) /*  RECURSION  */
+
+        /*  derive this trait  */
+        clz = deriveClass(trait, clz)
+    }
+
+    return clz
+}
+
 /*  utility function: get reversed trait list  */
 const reverseTraitList = (traits: (Trait | TypeFactory<Trait>)[]) =>
     traits.slice().reverse() as (Trait | TypeFactory<Trait>)[]
-
-/*  utility function: get raw trait  */
-const rawTrait = (x: (Trait | TypeFactory<Trait>)) =>
-    isTypeFactory(x) ? x() : x
 
 /*  API: type derive  */
 export const Derive =
@@ -174,23 +205,13 @@ export const Derive =
     /*  start with an empty root base class  */
     let clz: Cons<any> = class ROOT {}
 
+    /*  track already derived traits  */
+    const derived = new Map<number, boolean>()
+
     /*  iterate over all traits  */
-    for (const trait$ of reverseTraitList(traits)) {
-        const trait = rawTrait(trait$)
+    for (const trait$ of reverseTraitList(traits))
+        clz = deriveTrait(trait$, clz, derived)
 
-        /*  iterate over all of its super traits  */
-        if (trait.superTraits !== undefined) {
-            for (const superTrait$ of reverseTraitList(trait.superTraits)) {
-                const superTrait = rawTrait(superTrait$)
-
-                /*  derive from supertrait  */
-                clz = deriveClass(superTrait, clz)
-            }
-        }
-
-        /*  derive from trait  */
-        clz = deriveClass(trait, clz)
-    }
     return clz as DeriveTraits<T>
 }
 

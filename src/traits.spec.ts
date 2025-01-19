@@ -46,7 +46,7 @@ describe("Trait Facility", () => {
         sample.perform()
     })
 
-    it("complex usage tests", () => {
+    it("complex usage", () => {
         const spy = sinon.spy()
         const Foo = Trait((base) => class Foo extends base {
             constructor () { super(); spy("Foo") }
@@ -62,6 +62,25 @@ describe("Trait Facility", () => {
         }
         const app = new App()
         expect(hasTrait(app, Foo)).to.be.equal(true)
+        expect(spy.getCalls().map((x) => x.args[0]))
+            .to.be.deep.equal([ "Foo", "Bar", "Baz", "App" ])
+    })
+
+    it("double derivation", () => {
+        const spy = sinon.spy()
+        const Foo = Trait((base) => class extends base {
+            constructor () { super(); spy("Foo") }
+        })
+        const Bar = Trait([ Foo ], (base) => class extends base {
+            constructor () { super(); spy("Bar") }
+        })
+        const Baz = Trait([ Bar, Foo ], (base) => class Baz extends base {
+            constructor () { super(); spy("Baz") }
+        })
+        class App extends Derive(Baz, Foo, Foo) {
+            constructor () { super(); spy("App") }
+        }
+        const app = new App()
         expect(spy.getCalls().map((x) => x.args[0]))
             .to.be.deep.equal([ "Foo", "Bar", "Baz", "App" ])
     })
