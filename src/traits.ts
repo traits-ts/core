@@ -42,22 +42,25 @@ type ConsMergeTwo<
     A extends (new (...args: any[]) => any),
     B extends (new (...args: any[]) => any)
 > =
-    A   extends (new (...args: infer ArgsA) => infer RetA)
-    ? B extends (new (...args: infer ArgsB) => infer RetB)
-    ? new (...args: ArgsA & ArgsB) => RetA & RetB
-    : never
-    : never
+    A extends (new (...args: infer ArgsA) => infer RetA) ? (
+        B extends (new (...args: infer ArgsB) => infer RetB) ? (
+            new (...args: ArgsA & ArgsB) => RetA & RetB
+        ) : never
+    ) : never
 
 /*  utility type: merge one or more constructors  */
 type ConsMergeAny<
-    T extends (new (...args: any[]) => any)[]
+    T extends Cons[]
 > =
-    T extends [
-        infer    Head extends (new (...args: any[]) => any),
-        ...infer Tail extends (new (...args: any[]) => any)[]
-    ] ? ConsMergeTwo<Head, ConsMergeAny<Tail> /* RECURSION */>
-    : T extends [ infer Single extends (new (...args: any[]) => any) ] ? Single
-    : new (...args: any[]) => {}
+    T extends [ infer Single extends Cons ] ?
+        Single
+    : (
+        T extends [ infer Head extends Cons, ...infer Tail extends Cons[] ] ?
+            ConsMergeTwo<Head, ConsMergeAny<Tail>> /* RECURSION */
+        : (
+            Cons
+        )
+    )
 
 /*  utility type and function: constructor factory (function)  */
 type ConsFactory<T extends Cons = Cons, B extends any = any> =
