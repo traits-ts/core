@@ -238,8 +238,8 @@ const deriveTrait = (
 
         /*  iterate over all of its super traits  */
         if (trait.superTraits !== undefined)
-            for (const superTrait$ of reverseTraitList(trait.superTraits))
-                clz = deriveTrait(superTrait$, clz, derived) /*  RECURSION  */
+            for (const superTrait of reverseTraitList(trait.superTraits))
+                clz = deriveTrait(superTrait, clz, derived) /*  RECURSION  */
 
         /*  derive this trait  */
         clz = trait.factory(clz)
@@ -255,9 +255,9 @@ const reverseTraitList = (traits: (TraitAny | TypeFactory<TraitAny>)[]) =>
     traits.slice().reverse() as (TraitAny | TypeFactory<TraitAny>)[]
 
 /*  API: type derive  */
-export const derive =
+export function derive
     <T extends (TraitAny | TypeFactory<TraitAny>)[]>
-    (...traits: T): DeriveTraits<T> => {
+    (...traits: T): DeriveTraits<T> {
     /*  start with an empty root base class  */
     let clz: Cons<any> = class ROOT {}
 
@@ -265,8 +265,8 @@ export const derive =
     const derived = new Map<number, boolean>()
 
     /*  iterate over all traits  */
-    for (const trait$ of reverseTraitList(traits))
-        clz = deriveTrait(trait$, clz, derived)
+    for (const trait of reverseTraitList(traits))
+        clz = deriveTrait(trait, clz, derived)
 
     return clz as DeriveTraits<T>
 }
@@ -284,10 +284,9 @@ type Derived<T extends (TraitAny | TypeFactory<TraitAny>)> =
     never
 
 /*  API: type guard for checking whether class instance is derived from a trait  */
-export const derived = <
-    T extends (TraitAny | TypeFactory<TraitAny>)
-> (instance: unknown, trait: T):
-    instance is Derived<T> => {
+export function derived
+    <T extends (TraitAny | TypeFactory<TraitAny>)>
+    (instance: unknown, trait: T): instance is Derived<T> {
     /*  ensure the class instance is really an object  */
     if (typeof instance !== "object")
         return false
@@ -308,3 +307,4 @@ export const derived = <
     }
     return false
 }
+
