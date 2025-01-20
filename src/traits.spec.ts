@@ -29,6 +29,7 @@ describe("Trait Facility", () => {
         })
         const Walk = trait((base) => class Walk extends base {
             static walkers = 2
+            static fastWalk () { return "fastWalk" }
             walking = 0
             walk () { return this.walking++ }
         })
@@ -51,6 +52,7 @@ describe("Trait Facility", () => {
         expect(Sample.swimmers).to.be.equal(1)
         expect(Sample.walkers).to.be.equal(2)
         expect(Sample.samplers).to.be.equal(3)
+        expect(Sample.fastWalk()).to.be.equal("fastWalk")
         sample.perform()
     })
 
@@ -91,6 +93,26 @@ describe("Trait Facility", () => {
         const app = new App()
         expect(spy.getCalls().map((x) => x.args[0]))
             .to.be.deep.equal([ "Foo", "Bar", "Baz", "App" ])
+    })
+
+    it("super usage", () => {
+        const Foo = trait((base) => class Foo extends base {
+            quux (arg: string) {
+                return `foo.quux(${arg})`
+            }
+        })
+        const Bar = trait((base) => class Bar extends base {
+            quux (arg: string) {
+                return `bar.quux(${super.quux(arg)})`
+            }
+        })
+        class App extends derive(Bar, Foo) {
+            quux (arg: string) {
+                return `app.quux(${super.quux(arg)})`
+            }
+        }
+        const app = new App()
+        expect(app.quux("start")).to.be.equal("app.quux(bar.quux(foo.quux(start)))")
     })
 })
 
