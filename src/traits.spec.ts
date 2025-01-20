@@ -14,7 +14,7 @@ const expect = chai.expect
 chai.config.includeStack = true
 chai.use(sinonChai)
 
-describe("Trait Facility", () => {
+describe("@rse/traits", () => {
     it("exposed API", () => {
         expect(trait).to.be.a("function")
         expect(derive).to.be.a("function")
