@@ -153,12 +153,12 @@ export function trait<
 type ExtractFactory<T extends Trait> =
     T extends Trait<
         ConsFactory<infer C>,
-        (Trait | TypeFactory<Trait>)[] | undefined
+        TraitDefTypeST
     > ? C : never
 type ExtractSuperTrait<T extends Trait> =
     T extends Trait<
-        ConsFactory<Cons>,
-        infer ST extends ((Trait | TypeFactory<Trait>)[] | undefined)
+        TraitDefTypeT,
+        infer ST extends TraitDefTypeST
     > ? ST : never
 
 /*  utility type: derive type constructor: from constructor  */
