@@ -112,12 +112,12 @@ type TraitAny =
 
 /*  API: generate trait (regular variant)  */
 /* eslint no-redeclare: off */
-export function Trait<
+export function trait<
     T extends ConsFactory<Cons>
 > (factory: T): Trait<T>
 
 /*  API: generate trait (super-trait variant)  */
-export function Trait<
+export function trait<
     const ST extends (TraitAny | TypeFactory<TraitAny>)[],
     T extends ConsFactory<Cons,
         ST extends [ infer First, ...infer Rest ] ? (
@@ -129,7 +129,7 @@ export function Trait<
 > (superTraits: ST, factory: T): Trait<T, ST>
 
 /*  API: generate trait (technical implementation)  */
-export function Trait<
+export function trait<
     const ST extends (TraitAny | TypeFactory<TraitAny>)[],
     T extends ConsFactory<Cons,
         ST extends [ infer First, ...infer Rest ] ? (
@@ -255,7 +255,7 @@ const reverseTraitList = (traits: (TraitAny | TypeFactory<TraitAny>)[]) =>
     traits.slice().reverse() as (TraitAny | TypeFactory<TraitAny>)[]
 
 /*  API: type derive  */
-export const Derive =
+export const derive =
     <T extends (TraitAny | TypeFactory<TraitAny>)[]>
     (...traits: T): DeriveTraits<T> => {
     /*  start with an empty root base class  */
@@ -274,20 +274,20 @@ export const Derive =
 /*  ==== TRAIT TYPE-GUARDING ====  */
 
 /*  internal type: implements trait type  */
-type HasTraitType<T extends TraitAny> =
+type DerivedType<T extends TraitAny> =
     InstanceType<ExtractFactory<T>>
 
 /*  internal type: implements trait type or trait type factory  */
-type HasTrait<T extends (TraitAny | TypeFactory<TraitAny>)> =
-    T extends TypeFactory<TraitAny> ? HasTraitType<ReturnType<T>> :
-    T extends TraitAny              ? HasTraitType<T> :
+type Derived<T extends (TraitAny | TypeFactory<TraitAny>)> =
+    T extends TypeFactory<TraitAny> ? DerivedType<ReturnType<T>> :
+    T extends TraitAny              ? DerivedType<T> :
     never
 
-/*  API: type guard for checking whether class instance implements a trait  */
-export const hasTrait = <
+/*  API: type guard for checking whether class instance is derived from a trait  */
+export const derived = <
     T extends (TraitAny | TypeFactory<TraitAny>)
 > (instance: unknown, trait: T):
-    instance is HasTrait<T> => {
+    instance is Derived<T> => {
     /*  ensure the class instance is really an object  */
     if (typeof instance !== "object")
         return false

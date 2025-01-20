@@ -8,7 +8,7 @@ import * as chai from "chai"
 import sinon     from "sinon"
 import sinonChai from "sinon-chai"
 
-import { Trait, Derive, hasTrait } from "./traits"
+import { trait, derive, derived } from "./traits"
 
 const expect = chai.expect
 chai.config.includeStack = true
@@ -16,23 +16,23 @@ chai.use(sinonChai)
 
 describe("Trait Facility", () => {
     it("exposed API", () => {
-        expect(Trait).to.be.a("function")
-        expect(Derive).to.be.a("function")
-        expect(hasTrait).to.be.a("function")
+        expect(trait).to.be.a("function")
+        expect(derive).to.be.a("function")
+        expect(derived).to.be.a("function")
     })
 
     it("basic usage", () => {
-        const Swim = Trait((base) => class Swim extends base {
+        const Swim = trait((base) => class Swim extends base {
             static swimmers = 1
             swimming = 0
             swim () { return this.swimming++ }
         })
-        const Walk = Trait((base) => class Walk extends base {
+        const Walk = trait((base) => class Walk extends base {
             static walkers = 2
             walking = 0
             walk () { return this.walking++ }
         })
-        class Sample extends Derive(Swim, Walk) {
+        class Sample extends derive(Swim, Walk) {
             static samplers = 3
             sampling = 0
             perform () {
@@ -56,36 +56,36 @@ describe("Trait Facility", () => {
 
     it("complex usage", () => {
         const spy = sinon.spy()
-        const Foo = Trait((base) => class Foo extends base {
+        const Foo = trait((base) => class Foo extends base {
             constructor () { super(); spy("Foo") }
         })
-        const Bar = <T extends any>() => Trait((base) => class Bar extends base {
+        const Bar = <T extends any>() => trait((base) => class Bar extends base {
             constructor () { super(); spy("Bar") }
         })
-        const Baz = Trait([ Bar<string>, Foo ], (base) => class Baz extends base {
+        const Baz = trait([ Bar<string>, Foo ], (base) => class Baz extends base {
             constructor () { super(); spy("Baz") }
         })
-        class App extends Derive(Baz) {
+        class App extends derive(Baz) {
             constructor () { super(); spy("App") }
         }
         const app = new App()
-        expect(hasTrait(app, Foo)).to.be.equal(true)
+        expect(derived(app, Foo)).to.be.equal(true)
         expect(spy.getCalls().map((x) => x.args[0]))
             .to.be.deep.equal([ "Foo", "Bar", "Baz", "App" ])
     })
 
     it("double derivation", () => {
         const spy = sinon.spy()
-        const Foo = Trait((base) => class extends base {
+        const Foo = trait((base) => class extends base {
             constructor () { super(); spy("Foo") }
         })
-        const Bar = Trait([ Foo ], (base) => class extends base {
+        const Bar = trait([ Foo ], (base) => class extends base {
             constructor () { super(); spy("Bar") }
         })
-        const Baz = Trait([ Bar, Foo ], (base) => class Baz extends base {
+        const Baz = trait([ Bar, Foo ], (base) => class Baz extends base {
             constructor () { super(); spy("Baz") }
         })
-        class App extends Derive(Baz, Foo, Foo) {
+        class App extends derive(Baz, Foo, Foo) {
             constructor () { super(); spy("App") }
         }
         const app = new App()
