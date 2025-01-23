@@ -189,7 +189,7 @@ type DeriveStatCons<T extends Cons> =
     UnionToIntersection<Explode<T>>
 
 /*  utility type: derive type statics: from single trait  */
-type DerviceStatTrait<T extends Trait> =
+type DeriveStatTrait<T extends Trait> =
     DeriveStatCons<ExtractFactory<T>> &
     DeriveStatTraits<ExtractSuperTrait<T>> /* RECURSION */
 
@@ -198,8 +198,8 @@ type DeriveStatTraits<T extends ((Trait | TypeFactory<Trait>)[] | undefined)> =
     T extends (Trait | TypeFactory<Trait>)[] ? (
         UnionToIntersection<ArrayToUnion<{
             [ K in keyof T ]:
-                T[K] extends Trait              ? DerviceStatTrait<T[K]>             :
-                T[K] extends TypeFactory<Trait> ? DerviceStatTrait<ReturnType<T[K]>> :
+                T[K] extends Trait              ? DeriveStatTrait<T[K]>             :
+                T[K] extends TypeFactory<Trait> ? DeriveStatTrait<ReturnType<T[K]>> :
                 never
         }>>
     ) : {}
