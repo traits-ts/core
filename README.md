@@ -57,8 +57,10 @@ of the following parts:
   factory function. A sub-trait inherits all properties of its
   super-traits.
 
-- `const Baz = <T extends any>() => `**`trait`**`((base) => class Foo extends base { ... }`<br/>
-  `const Baz = <T extends any>() => `**`trait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
+- `const Baz = <T extends any>() =>`<br/>
+  **`trait`**`((base) => class Baz extends base { ... }`<br/>
+  `const Baz = <T extends any>() =>`<br/>
+  **`trait`**`([ Bar, Quux ], (base) => class Baz extends base { ... }`<br/>
   Define a *generic* trait (or sub-trait) with the help of a trait
   factory function enclosed in a wrapping factory function for the
   generic type specification.
