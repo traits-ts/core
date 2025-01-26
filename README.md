@@ -81,26 +81,22 @@ Example
 import { trait, derive } from "@rse/traits"
 import { expect }        from "chai"
 
-interface IntQueue {
-    get (): number | undefined
-    put (x: number): void
-}
-
-const BasicIntQueue = trait((base) => class extends base implements IntQueue {
+const Queue = trait((base) => class extends base {
     private buf: Array<number> = []
     get ()          { return this.buf.pop() }
     put (x: number) { this.buf.unshift(x) }
 })
-const Doubling = trait((base) => class extends base implements IntQueue {
-    get ()          { return super.get() }
+const Trace = trait((base) => class extends base {
+    get () { return super.get() }
+    put (x: number) { super.put(x) }
+})
+const Doubling = trait((base) => class extends base {
     put (x: number) { super.put(2 * x) }
 })
-const Incrementing = trait((base) => class extends base implements IntQueue {
-    get ()          { return super.get() }
+const Incrementing = trait((base) => class extends base {
     put (x: number) { super.put(x + 1) }
 })
-const Filtering = trait((base) => class extends base implements IntQueue {
-    get ()          { return super.get() }
+const Filtering = trait((base) => class extends base {
     put (x: number) { if (x >= 0) super.put(x) }
 })
 
