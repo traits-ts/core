@@ -104,8 +104,8 @@ const Filtering = trait((base) => class extends base implements IntQueue {
     put (x: number) { if (x >= 0) super.put(x) }
 })
 
-const Queue = class Queue extends derive(
-    Filtering, Doubling, Incrementing, BasicIntQueue) {}
+const Queue = class Queue extends
+    derive(Filtering, Doubling, Incrementing, BasicIntQueue) {}
 
 const queue = new Queue()
 expect(queue.get()).to.be.equal(undefined)
