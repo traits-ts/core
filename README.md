@@ -18,14 +18,22 @@ Traits
 About
 -----
 
-This is a small TypeScript library providing a trait (aka mixin)
-facility for extending classes with *multiple* base functionalities. It
-is fully type-safe at the TypeScript level and internally leverages the
-regular `class extends` mechanism at the JavaScript level. It consists
-of the API function `trait` for defining a trait or sub-trait, the API
-function `derive` for deriving a base class from one or more defined
-traits, and the API function `derived` to ensure an object has the
-functionality of a trait.
+This is a small TypeScript library providing a *trait* (aka *mixin*)
+facility for extending classes with *multiple* base functionalities,
+although TypeScript/JavaScript technically do not allow multiple
+inheritance.
+
+For this, it internally leverages the regular `class extends` mechanism
+at the JavaScript level, so it is does not have to manipulate the
+run-time objects at all. At the TypeScript level, it is fully type-safe
+and correctly derives all properties of the traits a class is derived
+from.
+
+This library consists of just three API functions: `trait` for defining
+a trait (or sub-trait), the API function `derive` for deriving a base
+class from one or more defined traits, and the API type-guard function
+`derived` to ensure an object has the functionality of a trait under
+run-time.
 
 Installation
 ------------
@@ -41,19 +49,28 @@ The Application Programming Interface (API) of **@rse/traits** consists
 of the following parts:
 
 - `import { `**`trait, derive, derived`**` } from "@rse/traits"`<br/>
-  Import the three API run-time functions.
+  Import the three API functions.
 
 - `const Foo = `**`trait`**`((base) => class Foo extends base { ... }`<br/>
   `const Foo = `**`trait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
-  Define a regular trait/sub-trait.
+  Define a *regular* trait (or sub-trait) with the help of a trait
+  factory function. A sub-trait inherits all properties of its
+  super-traits.
 
-- `const Foo = <T extends any>() => `**`trait`**`((base) => class Foo extends base { ... }`<br/>
-  `const Foo = <T extends any>() => `**`trait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
-  Define a generic trait/sub-trait.
+- `const Baz = <T extends any>() => `**`trait`**`((base) => class Foo extends base { ... }`<br/>
+  `const Baz = <T extends any>() => `**`trait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
+  Define a *generic* trait (or sub-trait) with the help of a trait
+  factory function enclosed in a wrapping factory function for the
+  generic type specification.
 
-- `class Sample extends `**`derive`**`(Foo, Quux) { ... }`<br/>
+- `class Sample extends `**`derive`**`(Foo, Bar<baz>, Quux) { ... }`<br/>
   Define an application class with features from a base class which
-  is derived from two traits.
+  is derived from one or more regular or generic traits.
+
+- `constructor () { `**`super`**`(...); ... }`<br/>
+  `foo () { ...; `**`super`**`.foo(...); ... }`<br/>
+  Call the super constructor (or super method) from an application class
+  constructor (or method).
 
 Example
 -------
