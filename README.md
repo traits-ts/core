@@ -79,38 +79,42 @@ Example
 
 ```ts
 import { trait, derive } from "@rse/traits"
+import { expect }        from "chai"
 
-const Swim = trait((base) => class Swim extends base {
-    swum = 0
-    swim () { return this.swum++ }
-})
-const Walk = trait((base) => class Walk extends base {
-    walked = 0
-    walk () { return this.walked++ }
-})
-class Sample extends derive(Swim, Walk) {
-    perform () {
-        console.log(this.swim())
-        console.log(this.walk())
-        console.log(this.swim())
-        console.log(this.walk())
-        console.log(this.swim())
-        console.log(this.walk())
-    }
+interface IntQueue {
+    get (): number | undefined
+    put (x: number): void
 }
 
-const sample = new Sample()
-sample.perform()
-```
+const BasicIntQueue = trait((base) => class extends base implements IntQueue {
+    private buf: Array<number> = []
+    get ()          { return this.buf.pop() }
+    put (x: number) { this.buf.unshift(x) }
+})
+const Doubling = trait((base) => class extends base implements IntQueue {
+    get ()          { return super.get() }
+    put (x: number) { super.put(2 * x) }
+})
+const Incrementing = trait((base) => class extends base implements IntQueue {
+    get ()          { return super.get() }
+    put (x: number) { super.put(x + 1) }
+})
+const Filtering = trait((base) => class extends base implements IntQueue {
+    get ()          { return super.get() }
+    put (x: number) { if (x >= 0) super.put(x) }
+})
 
-```
-$ npx tsx sample.js
-0
-0
-1
-1
-2
-2
+const Queue = class Queue extends derive(
+    Filtering, Doubling, Incrementing, BasicIntQueue) {}
+
+const queue = new Queue()
+expect(queue.get()).to.be.equal(undefined)
+queue.put(-1)
+expect(queue.get()).to.be.equal(undefined)
+queue.put(1)
+expect(queue.get()).to.be.equal(3)
+queue.put(10)
+expect(queue.get()).to.be.equal(21)
 ```
 
 History
