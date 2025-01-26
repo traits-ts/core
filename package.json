@@ -6,7 +6,7 @@
     "homepage":                          "http://github.com/rse/traits",
     "repository":                        { "url": "git+https://github.com/rse/traits.git", "type": "git" },
     "bugs":                              { "url": "http://github.com/rse/traits/issues" },
-    "version":                           "1.0.0",
+    "version":                           "1.0.1",
     "license":                           "MIT",
     "author": {
         "name":                          "Dr. Ralf S. Engelschall",
