@@ -58,9 +58,9 @@ of the following parts:
   super-traits.
 
 - `const Baz = <T extends any>() =>`<br/>
-  **`trait`**`((base) => class Baz extends base { ... }`<br/>
+  **`trait`**`((base) => class Baz extends base { ... T ... }`<br/>
   `const Baz = <T extends any>() =>`<br/>
-  **`trait`**`([ Bar, Quux ], (base) => class Baz extends base { ... }`<br/>
+  **`trait`**`([ Bar, Quux ], (base) => class Baz extends base { ... T ... }`<br/>
   Define a *generic* trait (or sub-trait) with the help of a trait
   factory function enclosed in a wrapping factory function for the
   generic type specification.
