@@ -121,11 +121,9 @@ History
 -------
 
 The **@rse/traits** library was developed in January 2025 by Dr. Ralf
-S. Engelschall. It is heavily inspired by the API and type tricks of
-**@ddd-ts/traits**, although it is a "from scratch" implementation
-as the complexity of constructor properties were not wished for
-**@rse/traits** and there should have been especially no API usage
-difference between generic and concrete traits.
+S. Engelschall. It is heavily inspired by Scala traits and the API
+of **@ddd-ts/traits**, although **@rse/traits** is a "from scratch"
+implementation for TypeScript.
 
 License
 -------
