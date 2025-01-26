@@ -68,6 +68,20 @@ type UnionToIntersection<U> =
 type ArrayToUnion<T extends any[]> =
     T[number]
 
+/*  utility type: convert two arrays of types into an array of union types  */
+type MixParams<T1 extends any[], T2 extends any[]> =
+    T1 extends [] ? (
+        T2 extends [] ? [] : T2
+    ) : (
+        T2 extends [] ? T1 : (
+            T1 extends [ infer H1, ...infer R1 ] ? (
+                T2 extends [ infer H2, ...infer R2 ] ?
+                    [ H1 & H2, ...MixParams<R1, R2> ]
+                    : []
+            ) : []
+        )
+    )
+
 /*  ==== TRAIT DEFINITION ====  */
 
 /*  API: trait type  */
@@ -153,7 +167,7 @@ type DeriveTraitsConsConsMerge<
 > =
     A extends (new (...args: infer ArgsA) => infer RetA) ? (
         B extends (new (...args: infer ArgsB) => infer RetB) ? (
-            new (...args: ArgsA & ArgsB) => RetA & RetB
+            new (...args: MixParams<ArgsA, ArgsB>) => RetA & RetB
         ) : never
     ) : never
 

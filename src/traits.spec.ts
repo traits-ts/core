@@ -115,6 +115,35 @@ describe("@rse/traits", () => {
         expect(app.quux("start")).to.be.equal("app.quux(bar.quux(foo.quux(start)))")
     })
 
+    it("constructor super usage", () => {
+        const spy = sinon.spy()
+        interface Sample {
+            foo1: string
+            foo2: number
+        }
+        const Foo = <T extends Sample>() => trait((base) => class Foo extends base {
+            constructor (params: { foo?: Sample }) {
+                super(params)
+                spy("Foo", params?.foo?.foo1 === "foo" && params?.foo?.foo2 === 7)
+            }
+        })
+        const Bar = trait((base) => class Bar extends base {
+            constructor (params: { bar?: number }) {
+                super(params)
+                spy("Bar", params?.bar === 42)
+            }
+        })
+        class App extends derive(Bar, Foo) {
+            constructor () {
+                super({ foo: { foo1: "foo", foo2: 7 }, bar: 42 })
+                spy("App")
+            }
+        }
+        const app = new App()
+        expect(spy.getCalls().map((x) => x.args.join(":")))
+            .to.be.deep.equal([ "Foo:true", "Bar:true", "App" ])
+    })
+
     it("sample regular", () => {
         const Queue = trait((base) => class extends base {
             private buf: Array<number> = []
