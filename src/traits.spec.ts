@@ -122,18 +122,18 @@ describe("@rse/traits", () => {
             foo2: number
         }
         const Foo = <T extends Sample>() => trait((base) => class Foo extends base {
-            constructor (params: { foo?: Sample }) {
+            constructor (params: { [ key: string ]: unknown; foo?: T } | undefined) {
                 super(params)
                 spy("Foo", params?.foo?.foo1 === "foo" && params?.foo?.foo2 === 7)
             }
         })
-        const Bar = trait((base) => class Bar extends base {
-            constructor (params: { bar?: number }) {
+        const Bar = trait([ Foo<Sample> ], (base) => class Bar extends base {
+            constructor (params: { [key: string ]: unknown; bar?: number } | undefined) {
                 super(params)
                 spy("Bar", params?.bar === 42)
             }
         })
-        class App extends derive(Bar, Foo) {
+        class App extends derive(Bar) {
             constructor () {
                 super({ foo: { foo1: "foo", foo2: 7 }, bar: 42 })
                 spy("App")
