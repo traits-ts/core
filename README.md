@@ -65,18 +65,18 @@ of just three API functions and can be used in the following way:
 import { trait, derive, derived } from "@traits-ts/core"
 
 //  Define a regular trait with a trait factory function.
-const Foo = trait((base) => class Foo extends base { ... }
+const Foo = trait((base) => class Foo extends base { ... })
 
 //  Define a sub-trait, which inherits all properties of its super-traits.
-const Foo = trait([ Bar, Qux ], (base) => class Foo extends base { ... }
+const Foo = trait([ Bar, Qux ], (base) => class Foo extends base { ... })
 
 //  Define a generic trait with a trait factory function,
 //  enclosed in a generic wrapping factory function.
-const Foo = <T extends any>() => trait((base) => class Foo extends base { ... T ... }
+const Foo = <T extends any>() => trait((base) => class Foo extends base { ... T ... })
 
 //  Define a generic sub-trait with a trait factory function,
 //  enclosed in a generic wrapping factory function.
-const Foo = <T extends any>() => trait([ Bar, Qux ], (base) => class Foo extends base { ... T ... }
+const Foo = <T extends any>() => trait([ Bar, Qux ], (base) => class Foo extends base { ... T ... })
 
 //  Define an application class with features from a dynamically generated
 //  base class which is derived from one or more regular or generic traits.
