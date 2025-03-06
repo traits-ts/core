@@ -103,16 +103,11 @@ Example
 
 ```ts
 import { trait, derive } from "@traits-ts/core"
-import { expect }        from "chai"
 
-const Queue = trait((base) => class extends base {
-    private buf: Array<number> = []
-    get ()          { return this.buf.pop() }
-    put (x: number) { this.buf.unshift(x) }
-})
-const Trace = trait((base) => class extends base {
-    get () { return super.get() }
-    put (x: number) { super.put(x) }
+const Queue = <T extends any>() => trait((base) => class extends base {
+    private buf: Array<T> = []
+    get () { return this.buf.pop() }
+    put (x: T) { this.buf.unshift(x) }
 })
 const Doubling = trait((base) => class extends base {
     put (x: number) { super.put(2 * x) }
@@ -124,17 +119,17 @@ const Filtering = trait((base) => class extends base {
     put (x: number) { if (x >= 0) super.put(x) }
 })
 
-const Queue = class Queue extends
-    derive(Filtering, Doubling, Incrementing, BasicIntQueue) {}
+const MyQueue = class MyQueue extends
+    derive(Filtering, Doubling, Incrementing, Queue<number>) {}
 
-const queue = new Queue()
-expect(queue.get()).to.be.equal(undefined)
+const queue = new MyQueue()
+queue.get()    // -> undefined
 queue.put(-1)
-expect(queue.get()).to.be.equal(undefined)
+queue.get()    // -> undefined
 queue.put(1)
-expect(queue.get()).to.be.equal(3)
+queue.get()    // -> 3
 queue.put(10)
-expect(queue.get()).to.be.equal(21)
+queue.get()    // -> 21
 ```
 
 History
