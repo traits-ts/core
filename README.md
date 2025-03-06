@@ -1,19 +1,19 @@
 
-<img src="https://raw.githubusercontent.com/rse/traits/refs/heads/master/etc/logo.svg" width="200" style="float: right" align="right" alt=""/>
+<img src="https://raw.githubusercontent.com/traits-ts/core/refs/heads/master/etc/logo.svg" width="200" style="float: right" align="right" alt=""/>
 
-Traits
-======
+@traits-ts/core
+===============
 
-**Traits for TypeScript Classes**
+**Traits for TypeScript Classes (Core)**
 
 <p/>
-<img src="https://nodei.co/npm/@rse/traits.png?downloads=true&stars=true" alt=""/>
+<img src="https://nodei.co/npm/@traits-ts/core.png?downloads=true&stars=true" alt=""/>
 
 [![github (author stars)](https://img.shields.io/github/stars/rse?logo=github&label=author%20stars&color=%233377aa)](https://github.com/rse)
 [![github (author followers)](https://img.shields.io/github/followers/rse?label=author%20followers&logo=github&color=%234477aa)](https://github.com/rse)
 <br/>
-[![npm (project release)](https://img.shields.io/npm/v/@rse/traits?logo=npm&label=npm%20release&color=%23cc3333)](https://npmjs.com/@rse/traits)
-[![npm (project downloads)](https://img.shields.io/npm/dm/@rse/traits?logo=npm&label=npm%20downloads&color=%23cc3333)](https://npmjs.com/@rse/traits)
+[![npm (project release)](https://img.shields.io/npm/v/@traits-ts/core?logo=npm&label=npm%20release&color=%23cc3333)](https://npmjs.com/@traits-ts/core)
+[![npm (project downloads)](https://img.shields.io/npm/dm/@traits-ts/core?logo=npm&label=npm%20downloads&color=%23cc3333)](https://npmjs.com/@traits-ts/core)
 
 About
 -----
@@ -39,16 +39,16 @@ Installation
 ------------
 
 ```sh
-$ npm install --save @rse/traits
+$ npm install --save @traits-ts/core
 ```
 
 API
 ---
 
-The Application Programming Interface (API) of **@rse/traits** consists
+The Application Programming Interface (API) of **@traits-ts/core** consists
 of the following parts:
 
-- `import { `**`trait, derive, derived`**` } from "@rse/traits"`<br/>
+- `import { `**`trait, derive, derived`**` } from "@traits-ts/core"`<br/>
   Import the three API functions.
 
 - `const Foo = `**`trait`**`((base) => class Foo extends base { ... }`<br/>
@@ -78,7 +78,7 @@ Example
 -------
 
 ```ts
-import { trait, derive } from "@rse/traits"
+import { trait, derive } from "@traits-ts/core"
 import { expect }        from "chai"
 
 const Queue = trait((base) => class extends base {
@@ -116,9 +116,9 @@ expect(queue.get()).to.be.equal(21)
 History
 -------
 
-The **@rse/traits** library was developed in January 2025 by Dr. Ralf
+The **@traits-ts/core** library was developed in January 2025 by Dr. Ralf
 S. Engelschall. It is heavily inspired by Scala traits and the API
-of **@ddd-ts/traits**, although **@rse/traits** is a "from scratch"
+of **@ddd-ts/traits**, although **@traits-ts/core** is a "from scratch"
 implementation for TypeScript.
 
 License
