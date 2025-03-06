@@ -58,33 +58,36 @@ API
 ---
 
 The Application Programming Interface (API) of **@traits-ts/core** consists
-of the following parts:
+of just three API functions and can be used in the following way:
 
-- `import { `**`trait, derive, derived`**` } from "@traits-ts/core"`<br/>
-  Import the three API functions.
+```ts
+//  Import the three API functions.
+import { trait, derive, derived } from "@traits-ts/core"
 
-- `const Foo = `**`trait`**`((base) => class Foo extends base { ... }`<br/>
-  `const Foo = `**`trait`**`([ Bar, Quux ], (base) => class Foo extends base { ... }`<br/>
-  Define a *regular* trait (or sub-trait) with the help of a trait
-  factory function. A sub-trait inherits all properties of its
-  super-traits.
+//  Define a regular trait with a trait factory function.
+const Foo = trait((base) => class Foo extends base { ... }
 
-- `const Baz = <T extends any>() =>`<br/>
-  **`trait`**`((base) => class Baz extends base { ... T ... }`<br/>
-  `const Baz = <T extends any>() =>`<br/>
-  **`trait`**`([ Bar, Quux ], (base) => class Baz extends base { ... T ... }`<br/>
-  Define a *generic* trait (or sub-trait) with the help of a trait
-  factory function enclosed in a wrapping factory function for the
-  generic type specification.
+//  Define a sub-trait, which inherits all properties of its super-traits.
+const Foo = trait([ Bar, Qux ], (base) => class Foo extends base { ... }
 
-- `class Sample extends `**`derive`**`(Foo, Bar<baz>, Quux) { ... }`<br/>
-  Define an application class with features from a base class which
-  is derived from one or more regular or generic traits.
+//  Define a generic trait with a trait factory function,
+//  enclosed in a generic wrapping factory function.
+const Foo = <T extends any>() => trait((base) => class Foo extends base { ... T ... }
 
-- `constructor () { `**`super`**`(...); ... }`<br/>
-  `foo () { ...; `**`super`**`.foo(...); ... }`<br/>
-  Call the super constructor (or super method) from an application class
-  constructor (or method).
+//  Define a generic sub-trait with a trait factory function,
+//  enclosed in a generic wrapping factory function.
+const Foo = <T extends any>() => trait([ Bar, Qux ], (base) => class Foo extends base { ... T ... }
+
+//  Define an application class with features from a dynamically generated
+//  base class which is derived from one or more regular or generic traits.
+class Sample extends derive(Foo, Bar<Baz>, Qux) { ... }
+
+//  Call the super constructor from an application class constructor.
+class Sample extends derive(...) { constructor () { super(...); ... } ... }
+
+//  Call the super method from an application class method.
+class Sample extends derive(...) { foo () { ...; super.foo(...); ... } ... }
+```
 
 Example
 -------
