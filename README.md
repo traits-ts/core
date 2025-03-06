@@ -61,32 +61,41 @@ The Application Programming Interface (API) of **@traits-ts/core** consists
 of just three API functions and can be used in the following way:
 
 ```ts
-//  Import the three API functions.
+//  Import API functions.
 import { trait, derive, derived } from "@traits-ts/core"
+//       =====  ======  =======
 
-//  Define a regular trait with a trait factory function.
+//  Define regular trait Foo.
 const Foo = trait((base) => class Foo extends base { ... })
+//          =====================     ============
 
-//  Define a sub-trait, which inherits all properties of its super-traits.
+//  Define regular sub-trait Foo, inheriting from super-traits Bar and Qux.
 const Foo = trait([ Bar, Qux ], (base) => class Foo extends base { ... })
+//                ============
 
-//  Define a generic trait with a trait factory function,
-//  enclosed in a generic wrapping factory function.
-const Foo = <T extends any>() => trait((base) => class Foo extends base { ... T ... })
+//  Define generic trait Foo.
+const Foo = <T extends any>() => trait((base) => class Foo extends base { ... <T> ... })
+//          ====================                                              ===
 
-//  Define a generic sub-trait with a trait factory function,
-//  enclosed in a generic wrapping factory function.
-const Foo = <T extends any>() => trait([ Bar, Qux ], (base) => class Foo extends base { ... T ... })
+//  Define generic sub-trait Foo, inheriting from super-traits Bar and Qux.
+const Foo = <T extends any>() => trait([ Bar, Qux ], (base) => class Foo extends base { ... <T> ... })
+//                                     ============
 
-//  Define an application class with features from a dynamically generated
-//  base class which is derived from one or more regular or generic traits.
+//  Define application class with features derived from traits Foo, Bar and Qux.
 class Sample extends derive(Foo, Bar<Baz>, Qux) { ... }
+//                   ==========================
 
-//  Call the super constructor from an application class constructor.
-class Sample extends derive(...) { constructor () { super(...); ... } ... }
+//  Call super constructor from application class constructor.
+class Sample extends derive(...) { constructor () { super(); ... } ... }
+//                                                  =======
 
-//  Call the super method from an application class method.
+//  Call super method from application class method.
 class Sample extends derive(...) { foo () { ...; super.foo(...); ... } ... }
+//                                               ==============
+
+//  Check whether application class is derived from a trait.
+const sample = new Sample(); if (derived(sample, Foo)) ...
+//                               ====================
 ```
 
 Example
