@@ -7,6 +7,11 @@
 **Traits for TypeScript Classes (Core)**
 
 <p/>
+<a href="https://traits-ts.org">Project Home</a> |
+<a href="https://github.com/traits-ts/core">Github Repository</a> |
+<a href="https://npmjs.com/traits-ts/core">NPM Distribution</a>
+
+<p/>
 <img src="https://nodei.co/npm/@traits-ts/core.png?downloads=true&stars=true" alt=""/>
 
 [![github (author stars)](https://img.shields.io/github/stars/rse?logo=github&label=author%20stars&color=%233377aa)](https://github.com/rse)
