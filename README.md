@@ -41,7 +41,7 @@ class from one or more defined traits, and the API type-guard function
 run-time.
 
 See also [@traits-ts/stdlib](https://github.com/traits-ts/stdlib) for
-a library of standard, reusable, generic, typed traits (aka mixins),
+a companion library of standard, reusable, generic, typed traits (aka mixins),
 based on this base library. Currently, this standard library consists
 of the reusable traits *Identifiable*, *Configurable*,*Bindable*,
 *Subscribable*, *Hookable*, *Disposable*, *Traceable*, and
