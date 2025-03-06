@@ -3,7 +3,7 @@
     "publishConfig":                     { "access": "public" },
     "description":                       "Traits for TypeScript Classes",
     "keywords":                          [ "traits", "class", "mixin" ],
-    "homepage":                          "http://github.com/traits-ts/core",
+    "homepage":                          "https://traits-ts.org",
     "repository":                        { "url": "git+https://github.com/traits-ts/core.git", "type": "git" },
     "bugs":                              { "url": "http://github.com/traits-ts/core/issues" },
     "version":                           "1.0.5",
