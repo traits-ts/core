@@ -1,11 +1,11 @@
 {
-    "name":                              "@rse/traits",
+    "name":                              "@traits-ts/core",
     "publishConfig":                     { "access": "public" },
     "description":                       "Traits for TypeScript Classes",
     "keywords":                          [ "traits", "class", "mixin" ],
-    "homepage":                          "http://github.com/rse/traits",
-    "repository":                        { "url": "git+https://github.com/rse/traits.git", "type": "git" },
-    "bugs":                              { "url": "http://github.com/rse/traits/issues" },
+    "homepage":                          "http://github.com/traits-ts/core",
+    "repository":                        { "url": "git+https://github.com/traits-ts/core.git", "type": "git" },
+    "bugs":                              { "url": "http://github.com/traits-ts/core/issues" },
     "version":                           "1.0.3",
     "license":                           "MIT",
     "author": {
