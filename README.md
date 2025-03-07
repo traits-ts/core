@@ -44,7 +44,7 @@ See also [@traits-ts/stdlib](https://github.com/traits-ts/stdlib) for
 a companion library of standard, reusable, generic, typed traits (aka mixins),
 based on this base library. Currently, this standard library consists
 of the reusable traits *Identifiable*, *Configurable*, *Bindable*,
-*Subscribable*, *Hookable*, *Disposable*, *Traceable*, and
+*Subscribable*, *Hookable*, *Finalizable*, *Traceable*, and
 *Serializable*.
 
 Installation
