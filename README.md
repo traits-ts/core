@@ -23,16 +23,16 @@
 About
 -----
 
-This is a small TypeScript library providing a *trait* (aka *mixin*)
+This is a TypeScript library providing a *trait* (aka *mixin*)
 facility for extending classes with *multiple* base functionalities,
 although TypeScript/JavaScript technically do not allow multiple
 inheritance.
 
 For this, it internally leverages the regular `class extends` mechanism
-at the JavaScript level, so it is does not have to manipulate the
-run-time objects at all. At the TypeScript level, it is fully type-safe
-and correctly derives all properties of the traits a class is derived
-from.
+and "linearizes" the trait hierarchy at the JavaScript level, so it
+is does not have to manipulate the run-time objects at all. At the
+TypeScript level, it is fully type-safe and recursively derives all
+properties of the traits a class is derived from.
 
 This library consists of just three API functions: `trait` for defining
 a trait (or sub-trait), the API function `derive` for deriving a base
@@ -74,12 +74,12 @@ const Foo = trait([ Bar, Qux ], (base) => class Foo extends base { ... })
 //                ============
 
 //  Define generic trait Foo.
-const Foo = <T extends any>() => trait((base) => class Foo extends base { ... <T> ... })
-//          ====================                                              ===
+const Foo = <T>() => trait((base) => class Foo extends base { ... <T> ... })
+//          =====                                                 ===
 
 //  Define generic sub-trait Foo, inheriting from super-traits Bar and Qux.
-const Foo = <T extends any>() => trait([ Bar, Qux ], (base) => class Foo extends base { ... <T> ... })
-//                                     ============
+const Foo = <T>() => trait([ Bar, Qux<T> ], (base) => class Foo extends base { ... <T> ... })
+//          =====          ===============                                         ===
 
 //  Define application class with features derived from traits Foo, Bar and Qux.
 class Sample extends derive(Foo, Bar<Baz>, Qux) { ... }
@@ -98,31 +98,56 @@ const sample = new Sample(); if (derived(sample, Foo)) ...
 //                               ====================
 ```
 
-Example
+Examples
 -------
+
+### Regular, Orthogonal/Independent Traits
 
 ```ts
 import { trait, derive } from "@traits-ts/core"
 
-const Queue = <T extends any>() => trait((base) => class extends base {
-    private buf: Array<T> = []
-    get () { return this.buf.pop() }
-    put (x: T) { this.buf.unshift(x) }
+const Duck = trait((base) => class extends base {
+    squeak () { return "squeak" }
 })
-const Doubling = trait((base) => class extends base {
+const Parrot = trait((base) => class extends base {
+    talk () { return "talk" }
+})
+const Animal = class Animal extends derive(Duck, Parrot) {
+    walk () { return "walk" }
+}
+
+const animal = new Animal()
+
+animal.squeak() // -> "squeak"
+animal.talk()   // -> "talk"
+animal.walk()   // -> "walk"
+```
+
+### Regular, Bounded/Dependent Traits
+
+```ts
+import { trait, derive } from "@traits-ts/core"
+
+const Queue = trait((base) => class extends base {
+    private buf: Array<number> = []
+    get () { return this.buf.pop() }
+    put (x: number) { this.buf.unshift(x) }
+})
+const Doubling = trait([ Queue ], (base) => class extends base {
     put (x: number) { super.put(2 * x) }
 })
-const Incrementing = trait((base) => class extends base {
+const Incrementing = trait([ Queue ], (base) => class extends base {
     put (x: number) { super.put(x + 1) }
 })
-const Filtering = trait((base) => class extends base {
+const Filtering = trait([ Queue ], (base) => class extends base {
     put (x: number) { if (x >= 0) super.put(x) }
 })
 
 const MyQueue = class MyQueue extends
-    derive(Filtering, Doubling, Incrementing, Queue<number>) {}
+    derive(Filtering, Doubling, Incrementing, Queue) {}
 
 const queue = new MyQueue()
+
 queue.get()    // -> undefined
 queue.put(-1)
 queue.get()    // -> undefined
@@ -130,6 +155,35 @@ queue.put(1)
 queue.get()    // -> 3
 queue.put(10)
 queue.get()    // -> 21
+```
+
+### Generic, Bounded/Dependent Traits
+
+```ts
+import { trait, derive } from "@traits-ts/core"
+
+const Queue = <T>() => trait((base) => class extends base {
+    private buf: Array<T> = []
+    get ()     { return this.buf.pop() }
+    put (x: T) { this.buf.unshift(x) }
+})
+const Tracing = <T>() => trait([ Queue<T> ], (base) => class extends base {
+    private trace (ev: string, x?: T) { console.log(ev, x) }
+    get ()     { const x = super.get(); this.trace("get", x); return x }
+    put (x: T) { this.trace("put", x); super.put(x) }
+})
+
+const MyTracingQueue = class MyTracingQueue extends
+    derive(Tracing<string>, Queue<string>) {}
+
+const queue = new MyTracingQueue()
+
+queue.put("foo")  // -> console: put foo
+queue.get()       // -> console: get foo
+queue.put("bar")  // -> console: put bar
+queue.put("qux")  // -> console: put qux
+queue.get()       // -> console: get bar
+queue.get()       // -> console: get qux
 ```
 
 History
