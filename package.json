@@ -58,11 +58,6 @@
         "@types/sinon-chai":             "4.0.0",
         "@types/chai-as-promised":       "8.0.2"
     },
-    "dependencies": {
-    },
-    "overrides": {
-        "vite-plugin-node-polyfills":    { "vite": "^6.0.0" }
-    },
     "scripts": {
         "start":                         "nps -c etc/nps.yaml"
     }
