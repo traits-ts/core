@@ -6,7 +6,7 @@
     "homepage":                          "https://traits-ts.org",
     "repository":                        { "url": "git+https://github.com/traits-ts/core.git", "type": "git" },
     "bugs":                              { "url": "http://github.com/traits-ts/core/issues" },
-    "version":                           "1.0.7",
+    "version":                           "1.0.8",
     "license":                           "MIT",
     "author": {
         "name":                          "Dr. Ralf S. Engelschall",
