@@ -144,49 +144,73 @@ describe("@rse/traits", () => {
             .to.be.deep.equal([ "Foo:true", "Bar:true", "App" ])
     })
 
-    it("sample regular", () => {
-        const Queue = <T extends any>() => trait((base) => class extends base {
+    it("sample traits: regular, orthogonal", () => {
+        const Duck = trait((base) => class extends base {
+            squeak () { return "squeak" }
+        })
+        const Parrot = trait((base) => class extends base {
+            talk () { return "talk" }
+        })
+        const Animal = class Animal extends derive(Duck, Parrot) {
+            walk () { return "walk" }
+        }
+        const animal = new Animal()
+        expect(animal.squeak()).to.be.equal("squeak")
+        expect(animal.talk()).to.be.equal("talk")
+        expect(animal.walk()).to.be.equal("walk")
+    })
+
+    it("sample traits: regular, bounded", () => {
+        const Queue = trait((base) => class extends base {
+            private buf: Array<number> = []
+            get () { return this.buf.pop() }
+            put (x: number) { this.buf.unshift(x) }
+        })
+        const Doubling = trait([ Queue ], (base) => class extends base {
+            put (x: number) { super.put(2 * x) }
+        })
+        const Incrementing = trait([ Queue ], (base) => class extends base {
+            put (x: number) { super.put(x + 1) }
+        })
+        const Filtering = trait([ Queue ], (base) => class extends base {
+            put (x: number) { if (x >= 0) super.put(x) }
+        })
+
+        const MyQueue = class MyQueue extends
+            derive(Filtering, Doubling, Incrementing, Queue) {}
+        const queue = new MyQueue()
+        expect(queue.get()).to.be.equal(undefined)
+        queue.put(-1)
+        expect(queue.get()).to.be.equal(undefined)
+        queue.put(1)
+        expect(queue.get()).to.be.equal(3)
+        queue.put(10)
+        expect(queue.get()).to.be.equal(21)
+    })
+
+    it("sample traits: generic, bounded", () => {
+        const Queue = <T>() => trait((base) => class extends base {
             private buf: Array<T> = []
             get () { return this.buf.pop() }
             put (x: T) { this.buf.unshift(x) }
         })
-        const Doubling = trait((base) => class extends base {
-            put (x: number) { super.put(2 * x) }
-        })
-        const Incrementing = trait((base) => class extends base {
-            put (x: number) { super.put(x + 1) }
-        })
-        const Filtering = trait((base) => class extends base {
-            put (x: number) { if (x >= 0) super.put(x) }
-        })
-        const Tracing = <T extends any>() => trait((base) => class extends base {
-            public onTrace = (ev: string, x: T) => {}
+        const Tracing = <T>() => trait([ Queue<T> ], (base) => class extends base {
+            public onTrace = (ev: string, x?: T) => {}
             get () { const x = super.get(); this.onTrace("get", x); return x }
             put (x: T) { this.onTrace("put", x); super.put(x) }
         })
 
-        const MyQueue = class MyQueue extends
-            derive(Filtering, Doubling, Incrementing, Queue<number>) {}
-        const queue1 = new MyQueue()
-        expect(queue1.get()).to.be.equal(undefined)
-        queue1.put(-1)
-        expect(queue1.get()).to.be.equal(undefined)
-        queue1.put(1)
-        expect(queue1.get()).to.be.equal(3)
-        queue1.put(10)
-        expect(queue1.get()).to.be.equal(21)
-
         const MyTracingQueue = class MyTracingQueue extends
             derive(Tracing<string>, Queue<string>) {}
         const spy = sinon.spy()
-        const queue2 = new MyTracingQueue()
-        queue2.onTrace = (ev: string, x: string) => { spy(ev, x) }
-        queue2.put("foo")
-        queue2.get()
-        queue2.put("bar")
-        queue2.put("qux")
-        queue2.get()
-        queue2.get()
+        const queue = new MyTracingQueue()
+        queue.onTrace = (ev: string, x?: string) => { spy(ev, x) }
+        queue.put("foo")
+        queue.get()
+        queue.put("bar")
+        queue.put("qux")
+        queue.get()
+        queue.get()
         expect(spy.getCalls().map((x) => x.args.join(":"))).to.be.deep.equal([
             "put:foo", "get:foo", "put:bar", "put:qux", "get:bar", "get:qux"
         ])
