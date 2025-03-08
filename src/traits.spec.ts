@@ -21,6 +21,30 @@ describe("@rse/traits", () => {
         expect(derived).to.be.a("function")
     })
 
+    it("basic derivation", () => {
+        const Trait1 = trait((base) => class extends base {
+            trait1 () {}
+        })
+        const Trait2 = <T>() => trait((base) => class extends base {
+            trait2 () {}
+        })
+        class Clazz {
+            clazz () {}
+        }
+        class Clazz2 {
+            clazz2 () {}
+        }
+        const Sample = class Sample extends
+            derive(Trait1, Clazz) {}
+        const sample = new Sample()
+        expect(sample.trait1).to.be.a("function")
+        expect(sample.clazz).to.be.a("function")
+        expect(derived(sample, Trait1)).to.be.equal(true)
+        expect(derived(sample, Trait2)).to.be.equal(false)
+        expect(derived(sample, Clazz)).to.be.equal(true)
+        expect(derived(sample, Clazz2)).to.be.equal(false)
+    })
+
     it("basic usage", () => {
         const Swim = trait((base) => class Swim extends base {
             static swimmers = 1
@@ -216,4 +240,3 @@ describe("@rse/traits", () => {
         ])
     })
 })
-

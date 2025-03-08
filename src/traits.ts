@@ -68,6 +68,10 @@ type UnionToIntersection<U> =
 type ArrayToUnion<T extends any[]> =
     T[number]
 
+/*  utility type: ensure that an array contains at least one element  */
+type ArrayNonEmpty<T extends any[]> =
+    [ T, ...T[] ]
+
 /*  utility type: convert two arrays of types into an array of union types  */
 type MixParams<T1 extends any[], T2 extends any[]> =
     T1 extends [] ? (
@@ -206,8 +210,13 @@ type DeriveTraitsConsOne<
 
 /*  utility type: derive type constructor: from one or more traits or trait factories  */
 type DeriveTraitsConsAll<
-    T extends ((Trait | TypeFactory<Trait>)[] | undefined)
+    T extends (((Trait | TypeFactory<Trait>)[] | [ ...(Trait | TypeFactory<Trait>)[], Cons ]) | undefined)
 > =
+    T extends [ ...infer Others extends (Trait | TypeFactory<Trait>)[], infer Last extends Cons ] ? (
+        DeriveTraitsConsConsMerge<
+            DeriveTraitsConsAll<Others>, /* RECURSION */
+            DeriveTraitsConsCons<Last>>
+    ) :
     T extends (Trait | TypeFactory<Trait>)[] ? (
         T extends [ infer First extends (Trait | TypeFactory<Trait>) ] ? (
             DeriveTraitsConsOne<First>
@@ -224,7 +233,7 @@ type DeriveTraitsConsAll<
 
 /*  utility type: derive type constructor  */
 type DeriveTraitsCons<
-    T extends (Trait | TypeFactory<Trait>)[]
+    T extends ((Trait | TypeFactory<Trait>)[] | [ ...(Trait | TypeFactory<Trait>)[], Cons ])
 > =
     DeriveTraitsConsAll<T>
 
@@ -272,8 +281,13 @@ type DeriveTraitsStatsOne<
 
 /*  utility type: derive type statics: from one or more traits or trait factories  */
 type DeriveTraitsStatsAll<
-    T extends ((Trait | TypeFactory<Trait>)[] | undefined)
+    T extends (((Trait | TypeFactory<Trait>)[] | [ ...(Trait | TypeFactory<Trait>)[], Cons ]) | undefined)
 > =
+    T extends [ ...infer Others extends (Trait | TypeFactory<Trait>)[], infer Last extends Cons ] ? (
+        DeriveTraitsStatsConsMerge<
+            DeriveTraitsStatsAll<Others>, /* RECURSION */
+            DeriveTraitsStatsCons<Last>>
+    ) :
     T extends (Trait | TypeFactory<Trait>)[] ? (
         T extends [ infer First extends (Trait | TypeFactory<Trait>) ] ? (
             DeriveTraitsStatsOne<First>
@@ -290,15 +304,15 @@ type DeriveTraitsStatsAll<
 
 /*  utility type: derive type statics  */
 type DeriveTraitsStats<
-    T extends (Trait | TypeFactory<Trait>)[]
+    T extends ((Trait | TypeFactory<Trait>)[] | [ ...(Trait | TypeFactory<Trait>)[], Cons ])
 > =
     DeriveTraitsStatsAll<T>
 
 /*  ---- TRAIT DERIVATION ----  */
 
-/*  utility type: derive type from one or more traits or trait factories  */
+/*  utility type: derive type from one or more traits or trait type factories  */
 type DeriveTraits<
-    T extends (Trait | TypeFactory<Trait>)[]
+    T extends ((Trait | TypeFactory<Trait>)[] | [ ...(Trait | TypeFactory<Trait>)[], Cons ])
 > =
     DeriveTraitsCons<T> &
     DeriveTraitsStats<T>
@@ -350,16 +364,35 @@ const reverseTraitList = (traits: (Trait | TypeFactory<Trait>)[]) =>
 
 /*  API: type derive  */
 export function derive
-    <T extends (Trait | TypeFactory<Trait>)[]>
+    <T extends (
+        [ Trait | TypeFactory<Trait>, ...(Trait | TypeFactory<Trait>)[] ] |
+        [ ...(Trait | TypeFactory<Trait>)[], Cons ]
+    )>
     (...traits: T): DeriveTraits<T> {
-    /*  start with an empty root base class  */
-    let clz: Cons<any> = class ROOT {}
+    /*  run-time sanity check  */
+    if (traits.length === 0)
+        throw new Error("invalid number of parameters (expected one or more traits)")
+
+    /*  determine the base class (clz) and the list of traits (lot)  */
+    let clz: Cons<any>
+    let lot: (Trait | TypeFactory<Trait>)[]
+    const last = traits[traits.length - 1]
+    if (isCons(last) && !isTypeFactory(last)) {
+        /*  case 1: with trailing regular class  */
+        clz = last
+        lot = traits.slice(0, traits.length - 1) as (Trait | TypeFactory<Trait>)[]
+    }
+    else {
+        /*  case 2: just regular traits or trait type factories  */
+        clz = class ROOT {}
+        lot = traits as (Trait | TypeFactory<Trait>)[]
+    }
 
     /*  track already derived traits  */
     const derived = new Map<number, boolean>()
 
     /*  iterate over all traits  */
-    for (const trait of reverseTraitList(traits))
+    for (const trait of reverseTraitList(lot))
         clz = deriveTrait(trait, clz, derived)
 
     return clz as DeriveTraits<T>
@@ -372,32 +405,41 @@ type DerivedType<T extends Trait> =
     InstanceType<ExtractFactory<T>>
 
 /*  internal type: implements trait type or trait type factory  */
-type Derived<T extends (Trait | TypeFactory<Trait>)> =
+type Derived<T extends (Trait | TypeFactory<Trait> | Cons)> =
     T extends TypeFactory<Trait> ? DerivedType<ReturnType<T>> :
     T extends Trait              ? DerivedType<T> :
+    T extends Cons               ? T :
     never
 
 /*  API: type guard for checking whether class instance is derived from a trait  */
 export function derived
-    <T extends (Trait | TypeFactory<Trait>)>
+    <T extends (Trait | TypeFactory<Trait> | Cons)>
     (instance: unknown, trait: T): instance is Derived<T> {
     /*  ensure the class instance is really an object  */
     if (typeof instance !== "object")
         return false
     let obj = instance
 
-    /*  determine unique id of trait  */
-    const t = (isTypeFactory(trait) ? trait() : trait) as Trait
-    const idTrait = t["id"]
+    if (isCons(trait) && !isTypeFactory(trait)) {
+        /*  special case: regular class  */
+        return (instance instanceof trait)
+    }
+    else {
+        /*  regular case: trait or trait type factory  */
 
-    /*  iterate over class/trait hierarchy  */
-    while (obj) {
-        if (Object.hasOwn(obj, "constructor")) {
-            const id = ((obj.constructor as any)["id"] as number) ?? 0
-            if (id === idTrait)
-                return true
+        /*  determine unique id of trait  */
+        const t = (isTypeFactory(trait) ? trait() : trait) as Trait
+        const idTrait = t["id"]
+
+        /*  iterate over class/trait hierarchy  */
+        while (obj) {
+            if (Object.hasOwn(obj, "constructor")) {
+                const id = ((obj.constructor as any)["id"] as number) ?? 0
+                if (id === idTrait)
+                    return true
+            }
+            obj = Object.getPrototypeOf(obj)
         }
-        obj = Object.getPrototypeOf(obj)
     }
     return false
 }
