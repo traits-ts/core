@@ -85,6 +85,10 @@ const Foo = <T>() => trait([ Bar, Qux<T> ], (base) => class Foo extends base { .
 class Sample extends derive(Foo, Bar<Baz>, Qux) { ... }
 //                   ==========================
 
+//  Define application class with features derived from traits and a trailing regular class
+class Sample extends derive(Foo, Bar<Baz>, Qux, EventEmitter) { ... }
+//                                              ============
+
 //  Call super constructor from application class constructor.
 class Sample extends derive(...) { constructor () { super(); ... } ... }
 //                                                  =======
