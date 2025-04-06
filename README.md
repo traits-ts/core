@@ -198,6 +198,12 @@ S. Engelschall. It is heavily inspired by Scala traits and the API
 of **@ddd-ts/traits**, although **@traits-ts/core** is a "from scratch"
 implementation for TypeScript.
 
+Support
+-------
+
+The work on this Open Source Software was financially supported by the
+german non-profit organisation *SEA Software Engineering Academy gGmbH*.
+
 License
 -------
 
