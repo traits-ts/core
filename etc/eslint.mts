@@ -17,7 +17,7 @@ import parserTS      from "@typescript-eslint/parser"
 
 export default [
     pluginJs.configs.recommended,
-    pluginMocha.configs.flat.recommended,
+    pluginMocha.configs.recommended,
     pluginChai.configs["recommended-flat"],
     ...pluginTS.configs.strict,
     ...pluginTS.configs.stylistic,
