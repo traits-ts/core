@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.1.3 (2023-05-31)
+------------------
+
+- UPDATE: update package dependencies
+- CLEANUP: cleanup Vite configuration
+
 1.1.2 (2023-05-06)
 ------------------
 
