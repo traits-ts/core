@@ -41,12 +41,7 @@ export default Vite.defineConfig(({ command, mode }) => ({
         assetsInlineLimit:      0,
         sourcemap:              (mode === "development"),
         minify:                 (mode === "production") && formats === "umd",
-        reportCompressedSize:   (mode === "production"),
-        rollupOptions: {
-            external: formats === "umd" ? [] : [
-                "eventemitter2",
-            ]
-        }
+        reportCompressedSize:   (mode === "production")
     }
 }))
 
