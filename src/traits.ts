@@ -101,6 +101,33 @@ export type Trait<
     superTraits: ST
 }
 
+type ResolveTraitLike<T extends Trait | TypeFactory<Trait>> = 
+    T extends TypeFactory<Trait>
+        ? ExtractFactory<ReturnType<T>>
+        : T extends Trait
+            ? ExtractFactory<T>
+            : unknown;
+
+type Combine<T extends any[]> = 
+    T extends [infer Head, ...infer Tail] 
+        ? Head & Combine<Tail> 
+        : {};
+
+type MapClassesToPrototypes<T extends Array<(new () => any) & {prototype: any}>> = {
+    [K in keyof T]: T[K]['prototype'];
+}
+
+type MapClassesToInstances<T extends Array<(new () => any) & {prototype: any}>> = {
+    [K in keyof T]: InstanceType<T[K]>;
+}
+
+type CombineClasses<T extends Array<(new () => any) & {prototype: any}>> = 
+    (new () => Combine<MapClassesToInstances<T>>) & {prototype: Combine<MapClassesToPrototypes<T>>};
+
+type ResolveTraitLikeArray<T extends Array<Trait | TypeFactory<Trait>>> = CombineClasses<{
+    [K in keyof T]: ResolveTraitLike<T[K]>;
+}>;
+
 /*  API: generate trait (regular variant)  */
 /* eslint no-redeclare: off */
 export function trait<
@@ -110,28 +137,13 @@ export function trait<
 /*  API: generate trait (super-trait variant)  */
 export function trait<
     const ST extends (Trait | TypeFactory<Trait>)[],
-    T extends ConsFactory<Cons,
-        ST extends [ infer First, ...infer Rest ] ? (
-            First extends TypeFactory<Trait> ? ExtractFactory<ReturnType<First>> :
-            First extends Trait              ? ExtractFactory<First> :
-            any
-        ) : any
-    >
+    T extends ConsFactory<Cons, ResolveTraitLikeArray<ST>>
 > (superTraits: ST, factory: T): Trait<T, ST>
 
 /*  API: generate trait (technical implementation)  */
-export function trait<
-    const ST extends (Trait | TypeFactory<Trait>)[],
-    T extends ConsFactory<Cons,
-        ST extends [ infer First, ...infer Rest ] ? (
-            First extends TypeFactory<Trait> ? ExtractFactory<ReturnType<First>> :
-            First extends Trait              ? ExtractFactory<First> :
-            any
-        ) : any
-    >
-> (...args: any[]): Trait<T, ST> {
-    const factory: T      = (args.length === 2 ? args[1] : args[0])
-    const superTraits: ST = (args.length === 2 ? args[0] : undefined)
+export function trait(...args: any[]): Trait<any, any> {
+    const factory: ConsFactory<any, any>      = (args.length === 2 ? args[1] : args[0])
+    const superTraits: (Trait | TypeFactory<Trait>)[] = (args.length === 2 ? args[0] : undefined)
     return {
         id: crc32(factory.toString()),
         symbol: Symbol("trait"),
@@ -405,7 +417,7 @@ type DerivedType<T extends Trait> =
     InstanceType<ExtractFactory<T>>
 
 /*  internal type: implements trait type or trait type factory  */
-type Derived<T extends (Trait | TypeFactory<Trait> | Cons)> =
+export type Derived<T extends (Trait | TypeFactory<Trait> | Cons)> =
     T extends TypeFactory<Trait> ? DerivedType<ReturnType<T>> :
     T extends Trait              ? DerivedType<T> :
     T extends Cons               ? T :
