@@ -101,7 +101,7 @@ export type Trait<
     superTraits: ST
 }
 
-export type ResolveTraitLike<T extends Trait | TypeFactory<Trait>> = 
+type ResolveTraitLike<T extends Trait | TypeFactory<Trait>> = 
     T extends TypeFactory<Trait>
         ? ExtractFactory<ReturnType<T>>
         : T extends Trait
@@ -124,7 +124,7 @@ type MapClassesToInstances<T extends Array<(new () => any) & {prototype: any}>> 
 type CombineClasses<T extends Array<(new () => any) & {prototype: any}>> = 
     (new () => Combine<MapClassesToInstances<T>>) & {prototype: Combine<MapClassesToPrototypes<T>>};
 
-export type ResolveTraitLikeArray<T extends Array<Trait | TypeFactory<Trait>>> = CombineClasses<{
+type ResolveTraitLikeArray<T extends Array<Trait | TypeFactory<Trait>>> = CombineClasses<{
     [K in keyof T]: ResolveTraitLike<T[K]>;
 }>;
 
