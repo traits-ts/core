@@ -417,7 +417,7 @@ type DerivedType<T extends Trait> =
     InstanceType<ExtractFactory<T>>
 
 /*  internal type: implements trait type or trait type factory  */
-type Derived<T extends (Trait | TypeFactory<Trait> | Cons)> =
+export type Derived<T extends (Trait | TypeFactory<Trait> | Cons)> =
     T extends TypeFactory<Trait> ? DerivedType<ReturnType<T>> :
     T extends Trait              ? DerivedType<T> :
     T extends Cons               ? T :
