@@ -416,7 +416,7 @@ export function derived
     <T extends (Trait | TypeFactory<Trait> | Cons)>
     (instance: unknown, trait: T): instance is Derived<T> {
     /*  ensure the class instance is really an object  */
-    if (typeof instance !== "object")
+    if (typeof instance !== "object" || instance === null)
         return false
     let obj = instance
 
