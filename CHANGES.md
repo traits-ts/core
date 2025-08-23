@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+1.1.7 (2023-08-23)
+------------------
+
+- IMPROVEMENT: add OXLint and Biome as additional linters to build process
+
 1.1.6 (2023-08-23)
 ------------------
 

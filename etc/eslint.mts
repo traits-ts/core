@@ -14,6 +14,8 @@ import pluginChai    from "eslint-plugin-chai-expect"
 import pluginTS      from "typescript-eslint"
 import globals       from "globals"
 import parserTS      from "@typescript-eslint/parser"
+import oxlint        from "eslint-plugin-oxlint"
+import biome         from "eslint-config-biome"
 
 export default [
     pluginJs.configs.recommended,
@@ -87,6 +89,8 @@ export default [
 
             "mocha/no-mocha-arrows":                              "off"
         }
-    }
+    },
+    ...oxlint.buildFromOxlintConfigFile("etc/oxlint.jsonc"),
+    biome
 ]
 
