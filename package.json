@@ -47,7 +47,7 @@
         "sinon-chai":                    "4.0.1",
         "sinon":                         "21.0.0",
 
-        "nps":                           "5.10.0",
+        "@rse/stx":                      "1.0.7",
         "nodemon":                       "3.1.10",
         "shx":                           "0.4.0",
 
@@ -58,11 +58,7 @@
         "@types/sinon-chai":             "4.0.0",
         "@types/chai-as-promised":       "8.0.2"
     },
-    "overrides": {
-        "vite-plugin-node-polyfills":    { "vite": ">=6.0.0" },
-        "vite-plugin-singlefile":        { "vite": ">=6.0.0" }
-    },
     "scripts": {
-        "start":                         "nps -c etc/nps.yaml"
+        "start":                         "stx -c etc/stx.conf -v4"
     }
 }

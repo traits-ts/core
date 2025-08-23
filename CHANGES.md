@@ -5,6 +5,7 @@ CHANGES
 1.1.6 (2023-08-23)
 ------------------
 
+- IMPROVEMENT: migrate from NPS to STX as the build tool
 - UPDATE: update package dependencies
 
 1.1.5 (2023-06-26)
