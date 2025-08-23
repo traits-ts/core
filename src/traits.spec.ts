@@ -10,7 +10,7 @@ import sinonChai from "sinon-chai"
 
 import { trait, derive, derived } from "./traits"
 
-const expect = chai.expect
+const { expect } = chai
 chai.config.includeStack = true
 chai.use(sinonChai)
 
@@ -186,7 +186,7 @@ describe("@traits-ts/traits", () => {
 
     it("sample traits: regular, bounded", () => {
         const Queue = trait((base) => class extends base {
-            private buf: Array<number> = []
+            private buf: number[] = []
             get () { return this.buf.pop() }
             put (x: number) { this.buf.unshift(x) }
         })
@@ -214,7 +214,7 @@ describe("@traits-ts/traits", () => {
 
     it("sample traits: generic, bounded", () => {
         const Queue = <T>() => trait((base) => class extends base {
-            private buf: Array<T> = []
+            private buf: T[] = []
             get () { return this.buf.pop() }
             put (x: T) { this.buf.unshift(x) }
         })
