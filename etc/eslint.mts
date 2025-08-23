@@ -54,7 +54,7 @@ export default [
             "no-useless-constructor":                             "off",
             "no-unused-vars":                                     "off",
 
-            "@stylistic/indent":                                  [ "error", 4, { SwitchCase: 1 } ],
+            "@stylistic/indent":                                  "off",
             "@stylistic/linebreak-style":                         [ "error", "unix" ],
             "@stylistic/semi":                                    [ "error", "never" ],
             "@stylistic/operator-linebreak":                      [ "error", "after", { overrides: { "&&": "before", "||": "before", ":": "after" } } ],
