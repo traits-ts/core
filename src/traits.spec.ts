@@ -240,3 +240,4 @@ describe("@traits-ts/traits", () => {
         ])
     })
 })
+
