@@ -62,7 +62,6 @@ export default [
             "@stylistic/quotes":                                  [ "error", "double" ],
 
             "@stylistic/no-multi-spaces":                         "off",
-            "@stylistic/no-multi-spaces":                         "off",
             "@stylistic/no-multiple-empty-lines":                 "off",
             "@stylistic/key-spacing":                             "off",
             "@stylistic/object-property-newline":                 "off",
@@ -71,7 +70,6 @@ export default [
             "@stylistic/lines-between-class-members":             "off",
             "@stylistic/multiline-ternary":                       "off",
             "@stylistic/quote-props":                             "off",
-            "@stylistic/indent":                                  "off",
 
             "@typescript-eslint/no-empty-function":               "off",
             "@typescript-eslint/no-explicit-any":                 "off",
