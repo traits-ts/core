@@ -5,6 +5,8 @@ CHANGES
 1.1.6 (2023-08-23)
 ------------------
 
+- BUGFIX: check for null class instances
+- CLEANUP: various build infrastructure cleanups
 - IMPROVEMENT: migrate from NPS to STX as the build tool
 - UPDATE: update package dependencies
 
