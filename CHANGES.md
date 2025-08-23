@@ -2,6 +2,21 @@
 CHANGES
 =======
 
+1.1.6 (2023-08-23)
+------------------
+
+- UPDATE: update package dependencies
+
+1.1.5 (2023-06-26)
+------------------
+
+- UPDATE: update package dependencies
+
+1.1.4 (2023-06-26)
+------------------
+
+- UPDATE: update package dependencies
+
 1.1.3 (2023-05-31)
 ------------------
 
