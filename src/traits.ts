@@ -380,7 +380,7 @@ export function derive
     if (isCons(last) && !isTypeFactory(last)) {
         /*  case 1: with trailing regular class  */
         clz = last
-        lot = traits.slice(0, traits.length - 1) as (Trait | TypeFactory<Trait>)[]
+        lot = traits.slice(0, -1) as (Trait | TypeFactory<Trait>)[]
     }
     else {
         /*  case 2: just regular traits or trait type factories  */
@@ -420,26 +420,20 @@ export function derived
         return false
     let obj = instance
 
-    if (isCons(trait) && !isTypeFactory(trait)) {
-        /*  special case: regular class  */
+    /*  special case: regular class  */
+    if (isCons(trait) && !isTypeFactory(trait))
         return (instance instanceof trait)
-    }
-    else {
-        /*  regular case: trait or trait type factory  */
 
-        /*  determine unique id of trait  */
-        const t = (isTypeFactory(trait) ? trait() : trait) as Trait
-        const idTrait = t["id"]
-
-        /*  iterate over class/trait hierarchy  */
-        while (obj) {
-            if (Object.hasOwn(obj, "constructor")) {
-                const id = ((obj.constructor as any)["id"] as number) ?? 0
-                if (id === idTrait)
-                    return true
-            }
-            obj = Object.getPrototypeOf(obj)
+    /*  regular case: trait or trait type factory...  */
+    const t = (isTypeFactory(trait) ? trait() : trait) as Trait
+    const idTrait = t["id"]
+    while (obj) {
+        if (Object.hasOwn(obj, "constructor")) {
+            const id = ((obj.constructor as any)["id"] as number) ?? 0
+            if (id === idTrait)
+                return true
         }
+        obj = Object.getPrototypeOf(obj)
     }
     return false
 }
