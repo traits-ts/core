@@ -6,6 +6,7 @@ CHANGES
 ------------------
 
 - CLEANUP: fix path for linting
+- UPDATE: update package dependencies
 
 1.2.0 (2023-08-23)
 ------------------
