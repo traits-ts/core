@@ -43,7 +43,7 @@
         "vite-plugin-node-polyfills":    "0.24.0",
         "@wroud/vite-plugin-tsc":        "0.12.1",
         "typescript":                    "5.9.2",
-        "tsx":                           "4.20.4",
+        "tsx":                           "4.20.5",
         "jiti":                          "2.5.1",
         "mocha":                         "11.7.1",
         "chai":                          "6.0.1",
@@ -51,7 +51,7 @@
         "sinon-chai":                    "4.0.1",
         "sinon":                         "21.0.0",
 
-        "@rse/stx":                      "1.0.7",
+        "@rse/stx":                      "1.0.9",
         "nodemon":                       "3.1.10",
         "shx":                           "0.4.0",
 
